@@ -207,6 +207,14 @@ model ContactMessage {
   @@map("contact_messages")
 }
 
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("subscribers")
+}
+
 model AdminUser {
   id           String   @id @default(cuid())
   email        String   @unique
