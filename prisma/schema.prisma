@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // الإنتاج: PostgreSQL (مع DATABASE_URL). محلياً شغّل Postgres ولا Neon مجاني.
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  pending
+  confirmation_required
+  confirmed
+  preparing
+  shipped
+  out_for_delivery
+  delivered
+  cancelled
+  refused
+  returned
+  refunded
+}
+
+enum PaymentMethod {
+  COD
+  CMI
+  CASH_PLUS
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  refunded
+}
+
+enum ReturnStatus {
+  requested
+  approved
+  rejected
+  returned
+  refunded
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  order       Int       @default(0)
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id              String          @id @default(cuid())
+  slug            String          @unique
+  name            String
+  description     String?
+  material        String?
+  care            String?
+  price           Float
+  compareAtPrice  Float?
+  image           String?
+  images          String          @default("[]")
+  categoryId      String?
+  category        Category?       @relation(fields: [categoryId], references: [id])
+  badge           String?
+  rating          Float           @default(0)
+  reviewsCount    Int             @default(0)
+  isFeatured      Boolean         @default(false)
+  isBestSeller    Boolean         @default(false)
+  isNew           Boolean         @default(false)
+  inStock         Boolean         @default(true)
+  seoTitle        String?
+  seoDescription  String?
+  variants        ProductVariant[]
+  reviews         Review[]
+  orderItems      OrderItem[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([categoryId])
+  @@map("products")
+}
+
+model ProductVariant {
+  id         String  @id @default(cuid())
+  productId  String
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku        String  @unique
+  size       String
+  color      String?
+  stock      Int     @default(0)
+  price      Float?
+
+  @@unique([productId, size, color])
+  @@map("product_variants")
+}
+
+model Order {
+  id                String        @id @default(cuid())
+  orderNumber       String        @unique
+  customerId        String?
+  customer          Customer?     @relation(fields: [customerId], references: [id])
+  customerName      String
+  phone             String
+  email             String?
+  city              String
+  address           String?
+  notes             String?
+  status            OrderStatus   @default(pending)
+  paymentMethod     PaymentMethod @default(COD)
+  paymentStatus     PaymentStatus @default(pending)
+  subtotal          Float
+  shippingFee       Float
+  discount          Float         @default(0)
+  couponCode        String?
+  total             Float
+  items             OrderItem[]
+  returnRequests    ReturnRequest[]
+  riskScore         Int           @default(0)
+  codConfirmation   Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@index([phone])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+  name      String
+  price     Float
+  quantity  Int
+  size      String?
+  color     String?
+  sku       String?
+
+  @@map("order_items")
+}
+
+model Customer {
+  id           String    @id @default(cuid())
+  name         String
+  phone        String    @unique
+  email        String?
+  city         String?
+  passwordHash String?
+  notes        String?
+  riskScore   Int       @default(0)
+  totalOrders Int       @default(0)
+  deliveredOrders Int   @default(0)
+  refusedOrders Int     @default(0)
+  orders      Order[]
+  createdAt   DateTime  @default(now())
+
+  @@map("customers")
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  type        String   @default("PERCENT")
+  value       Float
+  maxDiscount Float?
+  minSubtotal Float?
+  usageLimit  Int?
+  usedCount   Int      @default(0)
+  active      Boolean  @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  @@map("coupons")
+}
+
+model ReturnRequest {
+  id          String       @id @default(cuid())
+  orderId     String
+  order       Order        @relation(fields: [orderId], references: [id])
+  reason      String
+  status      ReturnStatus @default(requested)
+  notes       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("return_requests")
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String?
+  email     String?
+  message   String
+  createdAt DateTime @default(now())
+
+  @@map("contact_messages")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  @@map("admin_users")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  author    String
+  rating    Int
+  title     String?
+  body      String
+  status    String   @default("pending") // pending | approved
+  source    String   @default("site") // site | whatsapp | instagram
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@index([status])
+  @@map("reviews")
+}

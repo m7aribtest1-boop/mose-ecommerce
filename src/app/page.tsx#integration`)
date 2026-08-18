@@ -1,0 +1,69 @@
+
+Keep RTL Arabic, Amiri headings, emerald+gold+ivory, spacious editorial luxury. Reply ONLY with code blocks.
+
+Thinking completed
+tsx
+106
+107
+108
+109
+      </div>
+    </section>
+  );
+}
+tsx
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+              className="btn-primary px-8 py-3 font-arabic text-lg tracking-wide whitespace-nowrap"
+            >
+              اشترك
+            </button>
+          </form>
+          <p className="text-xs text-gray-400 mt-8 relative z-10 italic">
+            نحترم خصوصيتك ولن نشارك بريدك الإلكتروني مع أي طرف ثالث.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
