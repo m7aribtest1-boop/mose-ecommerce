@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // الإنتاج: PostgreSQL (مع DATABASE_URL). محلياً شغّل Postgres ولا Neon مجاني.
-  url      = env("DATABASE_URL")
+  provider = "postgresql" // الإنتاج: Neon Postgres (محقون كـ mosa_DATABASE_URL_UNPOOLED عبر تكامل Vercel).
+  url      = env("mosa_DATABASE_URL_UNPOOLED")
 }
 
 enum OrderStatus {
