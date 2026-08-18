@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/hooks/useCart';
 import { formatPrice } from '@/lib/utils';
 import { storeConfig } from '@/lib/store';
+import { track } from '@/lib/analytics';
 
 interface Variant { id: string; size: string; color?: string | null; stock: number; price?: number | null; sku: string; }
 export interface BuyProps {
@@ -27,6 +28,10 @@ export default function BuyBox({ product }: BuyProps) {
   const outOfStock = selectedSize === '' ? false : !variant || variant.stock <= 0;
   const remaining = selectedSize ? (variant?.stock ?? 0) : 0;
 
+  useEffect(() => {
+    track('PRODUCT_VIEW', { productId: product.id });
+  }, [product.id]);
+
   function handleAdd() {
     if (!selectedSize) { setError('الرجاء اختيار المقاس'); return; }
     if (outOfStock) { setError('هذا المقاس غير متوفر حالياً'); return; }
@@ -44,6 +49,7 @@ export default function BuyBox({ product }: BuyProps) {
       quantity,
       selectedSize
     );
+    track('ADD_TO_CART', { productId: product.id, size: selectedSize });
     setAdded(true); setError('');
     setTimeout(() => setAdded(false), 2500);
   }
@@ -99,6 +105,7 @@ export default function BuyBox({ product }: BuyProps) {
         <Link
           href={`https://wa.me/${storeConfig.whatsapp.number}?text=${encodeURIComponent(`السلام عليكم، بغيت المساعدة فـ المقاس ديال: ${product.name}`)}`}
           target="_blank" rel="noreferrer"
+          onClick={() => track('WHATSAPP_CLICK', { productId: product.id })}
           className="text-sm text-accent-600 hover:underline mt-2 inline-block"
         >
           متأكدة من المقاس؟ 💬 راسلينا طولك ووزنك على واتساب
@@ -122,6 +129,7 @@ export default function BuyBox({ product }: BuyProps) {
         <a
           href={`https://wa.me/${storeConfig.whatsapp.number}?text=${encodeURIComponent(waMessage)}`}
           target="_blank" rel="noreferrer"
+          onClick={() => track('WHATSAPP_CLICK', { productId: product.id })}
           className="flex-1 btn-outline py-4 text-lg rounded-xl flex items-center justify-center transition"
         >
           💬 واتساب

@@ -2,6 +2,7 @@
 
 import { MessageCircle } from 'lucide-react';
 import { storeConfig } from '@/lib/store';
+import { track } from '@/lib/analytics';
 
 export default function FloatingWhatsApp() {
   const message = encodeURIComponent('السلام عليكم، أريد الاستفسار عن منتجاتكم في متجر MOSE');
@@ -12,6 +13,7 @@ export default function FloatingWhatsApp() {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => track('WHATSAPP_CLICK')}
       className="group fixed bottom-6 left-6 z-50 flex items-center gap-3"
       aria-label="تواصل معنا عبر واتساب"
     >

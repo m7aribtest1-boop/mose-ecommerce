@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/hooks/useCart';
 import { formatPrice } from '@/lib/utils';
 import { storeConfig } from '@/lib/store';
+import { track } from '@/lib/analytics';
 import { PaymentMethods } from '@/components/PaymentMethods';
 
 export default function CheckoutPage() {
@@ -42,6 +43,7 @@ export default function CheckoutPage() {
     }
     setLoading(true);
     try {
+      track('CHECKOUT_START', { itemCount: items.length });
       const payload = {
         ...form,
         paymentMethod,

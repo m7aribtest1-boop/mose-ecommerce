@@ -26,7 +26,7 @@ export default async function AdminPage() {
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const [orders, todayOrdersCount, revenueAgg, todayRevenueAgg, productsCount, customersCount, pendingCount, lowStockVariants] =
+  const [orders, todayOrdersCount, revenueAgg, todayRevenueAgg, productsCount, customersCount, pendingCount, lowStockVariants, pageViewsToday, uniqueSessionsToday, addToCartsToday, checkoutStartsToday, whatsappClicksToday] =
     await Promise.all([
       prisma.order.findMany({ orderBy: { createdAt: 'desc' }, take: 500 }),
       prisma.order.count({ where: { createdAt: { gte: todayStart } } }),
@@ -39,6 +39,15 @@ export default async function AdminPage() {
       prisma.customer.count(),
       prisma.order.count({ where: { status: { in: ['pending', 'confirmation_required'] } } }),
       prisma.productVariant.count({ where: { stock: { lte: 2 } } }),
+      prisma.analyticsEvent.count({ where: { type: 'PAGE_VIEW', createdAt: { gte: todayStart } } }),
+      prisma.analyticsEvent.findMany({
+        where: { type: 'PAGE_VIEW', createdAt: { gte: todayStart } },
+        select: { sessionId: true },
+        distinct: ['sessionId'],
+      }),
+      prisma.analyticsEvent.count({ where: { type: 'ADD_TO_CART', createdAt: { gte: todayStart } } }),
+      prisma.analyticsEvent.count({ where: { type: 'CHECKOUT_START', createdAt: { gte: todayStart } } }),
+      prisma.analyticsEvent.count({ where: { type: 'WHATSAPP_CLICK', createdAt: { gte: todayStart } } }),
     ]);
 
   const byStatus = orders.reduce<Record<string, number>>((acc, o) => {
@@ -86,6 +95,36 @@ export default async function AdminPage() {
               <span className="font-bold text-primary-900">{count}</span>
             </div>
           ))}
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+          <h2 className="font-bold text-primary-900 mb-4">📊 مسار التحويل اليوم (Funnel)</h2>
+          <div className="space-y-3">
+            {[
+              { label: 'زوار فريدون', value: uniqueSessionsToday.length, icon: '👤' },
+              { label: 'مشاهدات الصفحات', value: pageViewsToday, icon: '👁️' },
+              { label: 'إضافات للسلة', value: addToCartsToday, icon: '🛒' },
+              { label: 'بدء الدفع', value: checkoutStartsToday, icon: '💳' },
+              { label: 'طلبات مكتملة', value: todayOrdersCount, icon: '✅' },
+              { label: 'نقرات واتساب', value: whatsappClicksToday, icon: '💬' },
+            ].map((step, i, arr) => {
+              const prev = i === 0 ? step.value : arr[i - 1].value;
+              const pct = prev > 0 ? Math.round((step.value / prev) * 100) : 0;
+              return (
+                <div key={step.label} className="flex items-center gap-3">
+                  <div className="w-40 text-sm text-secondary-700">{step.icon} {step.label}</div>
+                  <div className="flex-1 bg-secondary-100 rounded-full h-6 relative overflow-hidden">
+                    <div className="bg-primary-500 h-full" style={{ width: `${Math.min(100, pct)}%` }} />
+                  </div>
+                  <div className="w-20 text-right text-sm font-bold text-primary-900">{step.value}</div>
+                  <div className="w-12 text-left text-xs text-secondary-500">{i === 0 ? '—' : `${pct}%`}</div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-xs text-secondary-500 mt-4">
+            نسبة تحويل الزائر إلى طلب: {uniqueSessionsToday.length > 0 ? `${Math.round((todayOrdersCount / uniqueSessionsToday.length) * 100)}%` : '—'}
+          </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4">

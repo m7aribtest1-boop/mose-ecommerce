@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { storeConfig } from '@/lib/store';
+import { track } from '@/lib/analytics';
 
 interface LastOrder {
   orderNumber: string; total: number; customerName: string; city: string; paymentMethod: string;
@@ -16,6 +17,7 @@ export default function OrderSuccessPage() {
     if (raw) {
       try { setOrder(JSON.parse(raw)); } catch {}
     }
+    track('ORDER_COMPLETE');
   }, []);
 
   const waNumber = storeConfig.whatsapp.number;

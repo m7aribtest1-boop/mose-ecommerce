@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // الإنتاج: Neon Postgres (محقون كـ mosa_DATABASE_URL_UNPOOLED عبر تكامل Vercel).
+  provider = "postgresql" // الإنتاج: Neon Postgres (محقون كـ mosa_DATABASE_URL_UNPOOLED عبر تكامل Vercel). محلياً بدّل إلى sqlite.
   url      = env("mosa_DATABASE_URL_UNPOOLED")
 }
 
@@ -240,4 +240,85 @@ model Review {
   @@index([productId])
   @@index([status])
   @@map("reviews")
+}
+
+// ── Analytics (privacy-safe, no PII) ──────────────────────────────
+enum AnalyticsEventType {
+  PAGE_VIEW
+  PRODUCT_VIEW
+  ADD_TO_CART
+  REMOVE_FROM_CART
+  CHECKOUT_START
+  ORDER_COMPLETE
+  WHATSAPP_CLICK
+  SEARCH
+}
+
+model AnalyticsEvent {
+  id          String            @id @default(cuid())
+  type        AnalyticsEventType
+  sessionId   String // anonymous, rotated daily (client cookie)
+  path        String
+  referrer    String?
+  productId   String?
+  categoryId  String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  device      String? // mobile | desktop | tablet (coarse)
+  country     String? // from Vercel geo header — country only, never raw IP
+  createdAt   DateTime          @default(now())
+
+  @@index([type, createdAt])
+  @@index([sessionId, createdAt])
+  @@index([productId])
+  @@index([path])
+  @@map("analytics_events")
+}
+
+model AggregatedStat {
+  id             String   @id @default(cuid())
+  date           DateTime // day, UTC midnight
+  pageViews      Int      @default(0)
+  uniqueSessions Int      @default(0)
+  productViews   Int      @default(0)
+  addToCarts     Int      @default(0)
+  checkoutStarts Int      @default(0)
+  orders         Int      @default(0)
+  revenue        Float    @default(0)
+  whatsappClicks Int      @default(0)
+  topProductId   String?
+  @@unique([date])
+  @@index([date])
+  @@map("aggregated_stats")
+}
+
+// ── Admin security (phase 3) ──────────────────────────────────────
+model AdminAuditLog {
+  id        String   @id @default(cuid())
+  eventType String
+  userId    String?
+  ip        String?
+  userAgent String?
+  metadata  Json?
+  timestamp DateTime @default(now())
+  @@index([userId, timestamp(sort: Desc)])
+  @@map("admin_audit_logs")
+}
+
+// ── Store settings (phase 3) ──────────────────────────────────────
+model StoreSettings {
+  id             String  @id @default("singleton")
+  storeName      String  @default("موسى")
+  whatsappNumber String
+  currency       String  @default("MAD")
+  shippingText   String?
+  heroHeadline   String?
+  heroSubheadline String?
+  brandStory     String?
+  aboutText      String?
+  sizeGuideText  String?
+  socialJson     Json?
+  updatedAt      DateTime @updatedAt
+  @@map("store_settings")
 }
