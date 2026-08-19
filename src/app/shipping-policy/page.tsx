@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { storeConfig } from '@/lib/store';
+import { getStoreSettings } from '@/lib/store-settings';
 
 export const metadata: Metadata = {
   title: 'سياسة الشحن والتوصيل | متجر موسى',
 };
 
-export default function ShippingPolicyPage() {
+export default async function ShippingPolicyPage() {
+  const settings = await getStoreSettings();
   return (
     <main className="flex-1">
       <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white py-12">
@@ -36,6 +38,13 @@ export default function ShippingPolicyPage() {
               </div>
             </div>
           </div>
+
+          {settings.shippingText && (
+            <div className="card p-6 mb-6">
+              <h2 className="text-xl font-bold text-primary-900 mb-4">📦 ملاحظات الشحن</h2>
+              <p className="text-secondary-700 text-sm whitespace-pre-line">{settings.shippingText}</p>
+            </div>
+          )}
 
           <div className="card p-6">
             <h2 className="text-xl font-bold text-primary-900 mb-4">نقط مهمة</h2>

@@ -11,6 +11,7 @@ import FaqSection from '@/components/FaqSection';
 import InstagramGrid from '@/components/InstagramGrid';
 import HomeMobileCta from '@/components/HomeMobileCta';
 import { EditorialEdit, type EditProduct } from '@/components/EditorialEdit';
+import { getStoreSettings } from '@/lib/store-settings';
 
 export const revalidate = 300;
 
@@ -39,6 +40,7 @@ function toCard(p: {
 }
 
 export default async function HomePage() {
+  const settings = await getStoreSettings();
   const [featuredProducts, categories, jellaba, takchita, newArrivals] = await Promise.all([
     prisma.product.findMany({
       include: { category: true },
@@ -64,7 +66,7 @@ export default async function HomePage() {
 
   return (
     <main className="flex-1">
-      <HeroSection />
+      <HeroSection headline={settings.heroHeadline || undefined} subheadline={settings.heroSubheadline || undefined} />
       <HomeMobileCta />
       <TrustBadges />
       <CategorySection categories={categoriesForSection} />
@@ -89,7 +91,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-      <BrandStory />
+      <BrandStory story={settings.brandStory} />
       <EditorialEdit
         eyebrow="Edit رقم ٠١ — الجلابة"
         title="إصدار الجلابة"

@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from 'next';
+import { getStoreSettings } from '@/lib/store-settings';
 
 export const metadata: Metadata = {
   title: 'من نحن',
@@ -11,7 +12,8 @@ const values = [
   { icon: '☆', title: 'خدمة الزبون أولاً', text: 'فريقنا تحت تصرفكم للإجابة على أسئلتكم وتقديم النصائح حول المقاسات والتنسيق.' },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await getStoreSettings();
   return (
     <main className="flex-1">
       <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white py-16 lg:py-24">
@@ -24,18 +26,24 @@ export default function AboutPage() {
       <section className="py-16 bg-white">
         <div className="container-custom max-w-4xl">
           <div className="prose prose-lg mx-auto text-secondary-700 leading-relaxed space-y-6">
-            <p className="text-xl font-semibold text-primary-900">
-              بدأت قصة موسى سنة 1998 في أحد أزقة فاس العتيقة، حيث ورثنا عن الأجداد شغف الخياطة التقليدية وحب التفاصيل.
-            </p>
-            <p>
-              في البداية كانت ورشة صغيرة لتفصيل الجلابة والقمصان التقليدية، نسلم كل قطعة بعد أيام من العمل المتواصل على يد الحرفيين. ومع مرور الوقت، وفي كل مناسبة وعرس، كانت قطعنا تحكي قصصاً من الفرح والفخر لمن يرتديها.
-            </p>
-            <p>
-              اليوم، وبعد أكثر من 25 سنة، نجمع بين أصالة الموروث المغربي وحداثة التجارة الإلكترونية. نعرض تشكيلتنا كاملة أونلاين مع توصيل لجميع المدن المغربية، مع بقائنا أوفياء لمبدأنا: <strong className="text-primary-700">كل قطعة تستحق أن تصنع بيد حرفي حقيقي</strong>.
-            </p>
-            <p>
-              من فاس إلى العالم، موسى يعنى الاستمرارية في الجودة، الابتكار في التصميم، والحفاظ على الهوية المغربية في كل غرزة.
-            </p>
+            {settings.aboutText ? (
+              <p className="text-xl font-semibold text-primary-900 whitespace-pre-line">{settings.aboutText}</p>
+            ) : (
+              <>
+                <p className="text-xl font-semibold text-primary-900">
+                  بدأت قصة موسى سنة 1998 في أحد أزقة فاس العتيقة، حيث ورثنا عن الأجداد شغف الخياطة التقليدية وحب التفاصيل.
+                </p>
+                <p>
+                  في البداية كانت ورشة صغيرة لتفصيل الجلابة والقمصان التقليدية، نسلم كل قطعة بعد أيام من العمل المتواصل على يد الحرفيين. ومع مرور الوقت، وفي كل مناسبة وعرس، كانت قطعنا تحكي قصصاً من الفرح والفخر لمن يرتديها.
+                </p>
+                <p>
+                  اليوم، وبعد أكثر من 25 سنة، نجمع بين أصالة الموروث المغربي وحداثة التجارة الإلكترونية. نعرض تشكيلتنا كاملة أونلاين مع توصيل لجميع المدن المغربية، مع بقائنا أوفياء لمبدأنا: <strong className="text-primary-700">كل قطعة تستحق أن تصنع بيد حرفي حقيقي</strong>.
+                </p>
+                <p>
+                  من فاس إلى العالم، موسى يعنى الاستمرارية في الجودة، الابتكار في التصميم، والحفاظ على الهوية المغربية في كل غرزة.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-export function BrandStory() {
+export function BrandStory({ story }: { story?: string | null }) {
   const stats = [
     { value: '+15', label: 'سنة خبرة' },
     { value: '100%', label: 'صناعة يدوية' },
@@ -37,9 +37,9 @@ export function BrandStory() {
               تَرَاثٌ مَغْرِبِيٌّ يَعْرِفُ طَرِيقَهُ إِلَى المُسْتَقْبَل
             </h2>
             <p className="text-secondary-600 text-lg leading-relaxed mb-6">
-              فِي مُتجَرِ موسى، كُلُّ قِطعةٍ تَحكِي حِرفةً مَغرِبِيّةً أصِيلة. نَختارُ أجوَدَ الأقمشةِ
+              {story || `فِي مُتجَرِ موسى، كُلُّ قِطعةٍ تَحكِي حِرفةً مَغرِبِيّةً أصِيلة. نَختارُ أجوَدَ الأقمشةِ
               ونُسنِدُ التَّطريزَ إِلى أَمهَرِ المُعَلِّمِينَ، لِنُقدِّمَ لَكُم جَلَّابَةً وقَفطاناً
-              يَجمَعُ بَينَ الأَصَالَةِ والعَصرِيّة.
+              يَجمَعُ بَينَ الأَصَالَةِ والعَصرِيّة.`}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
               {stats.map((s) => (

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getStoreSettings } from '@/lib/store-settings';
 
 export const metadata: Metadata = {
   title: 'دليل المقاسات | متجر موسى',
@@ -38,7 +39,8 @@ const tables = [
   },
 ];
 
-export default function SizeGuidePage() {
+export default async function SizeGuidePage() {
+  const settings = await getStoreSettings();
   return (
     <main className="flex-1">
       <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white py-12">
@@ -64,6 +66,13 @@ export default function SizeGuidePage() {
 
             </p>
           </div>
+
+          {settings.sizeGuideText && (
+            <div className="card p-6 mb-8 bg-white border-primary-200">
+              <h2 className="text-xl font-bold text-primary-900 mb-3">📝 ملاحظات المقاسات</h2>
+              <p className="text-secondary-700 text-sm whitespace-pre-line">{settings.sizeGuideText}</p>
+            </div>
+          )}
 
           {tables.map((t) => (
             <div key={t.title} className="card p-6 mb-8 overflow-x-auto">
@@ -94,7 +103,7 @@ export default function SizeGuidePage() {
               صيفطي لينا طولك ووزنك التقريبي على واتساب، ومستشارتنا تجاوبك بالمقاس المناسب خلال ساعات.
             </p>
             <a
-              href="https://wa.me/212600000000?text=سلام، بغيت مساعدة فاختيار المقاس. طولي هو: ... ووزني هو: ..."
+              href={`https://wa.me/${settings.whatsappNumber}?text=سلام، بغيت مساعدة فاختيار المقاس. طولي هو: ... ووزني هو: ...`}
               target="_blank" rel="noreferrer"
               className="bg-accent-600 hover:bg-accent-700 text-white font-semibold px-6 py-3 rounded-xl inline-block transition"
             >
