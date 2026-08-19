@@ -52,7 +52,7 @@ export default function NewsletterSignup() {
 
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto relative z-10"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-lg mx-auto relative z-10"
           >
             <input
               type="email"
@@ -61,13 +61,13 @@ export default function NewsletterSignup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="بريدك الإلكتروني"
-              className="flex-1 px-4 py-3 border border-secondary-300 focus:border-primary-600 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-white text-right placeholder:text-secondary-400"
+              className="flex-1 min-w-0 w-full px-4 py-3 border border-secondary-300 focus:border-primary-600 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-white text-right placeholder:text-secondary-400"
             />
             <select
               name="city"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="px-4 py-3 border border-secondary-300 focus:border-primary-600 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-white text-right"
+              className="min-w-0 w-full sm:w-48 shrink-0 px-4 py-3 border border-secondary-300 focus:border-primary-600 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-white text-right"
             >
               <option value="">المدينة (اختياري)</option>
               {CITIES.map((c) => (
@@ -77,7 +77,7 @@ export default function NewsletterSignup() {
             <button
               type="submit"
               disabled={status === 'sending'}
-              className="inline-flex items-center justify-center bg-primary-800 text-ivory px-8 py-3 font-arabic font-semibold rounded-md hover:bg-primary-900 transition-colors disabled:opacity-50"
+              className="inline-flex items-center justify-center w-full sm:w-auto shrink-0 bg-primary-800 text-ivory px-8 py-3 font-arabic font-semibold rounded-md hover:bg-primary-900 transition-colors disabled:opacity-50"
             >
               {status === 'sending' ? 'جارٍ الاشتراك...' : 'اشترك'}
             </button>
