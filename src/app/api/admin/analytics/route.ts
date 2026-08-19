@@ -27,20 +27,50 @@ export async function GET(req: NextRequest) {
 
   const orders = await prisma.order.findMany({
     where: { createdAt: { gte: from, lte: to } },
-    select: { total: true, status: true, createdAt: true },
+    select: {
+      total: true, status: true, createdAt: true, couponCode: true, sessionId: true,
+      items: { select: { productId: true, name: true, price: true, quantity: true } },
+    },
   });
 
   // ── totals ──────────────────────────────────────────────
   const counts: Record<string, number> = {};
   const sessions = new Set<string>();
+  const sessionData = new Map<string, { source: string; hasCart: boolean; hasOrder: boolean; hasWhatsapp: boolean }>();
+  function getSession(id: string) {
+    let s = sessionData.get(id);
+    if (!s) { s = { source: 'مباشر / Direct', hasCart: false, hasOrder: false, hasWhatsapp: false }; sessionData.set(id, s); }
+    return s;
+  }
   for (const e of events) {
     counts[e.type] = (counts[e.type] || 0) + 1;
     if (e.type === 'PAGE_VIEW') sessions.add(e.sessionId);
+    const s = getSession(e.sessionId);
+    if (e.utmSource) s.source = e.utmSource;
+    if (e.type === 'ADD_TO_CART') s.hasCart = true;
+    if (e.type === 'ORDER_COMPLETE') s.hasOrder = true;
+    if (e.type === 'WHATSAPP_CLICK') s.hasWhatsapp = true;
   }
   const uniqueSessions = sessions.size;
   const ordersCount = orders.length;
   const revenue = orders.reduce((s, o) => s + (REVENUE_EXCLUDE.includes(o.status) ? 0 : o.total), 0);
   const conversionRate = uniqueSessions > 0 ? (ordersCount / uniqueSessions) * 100 : 0;
+
+  // ── cart abandonment + whatsapp attribution + by source conversion ──
+  let sessionsWithCart = 0, sessionsWithCartConverted = 0, whatsappConverted = 0;
+  const sourceSessions = new Map<string, { total: number; converted: number }>();
+  for (const [, s] of Array.from(sessionData)) {
+    if (s.hasCart) { sessionsWithCart++; if (s.hasOrder) sessionsWithCartConverted++; }
+    if (s.hasWhatsapp && s.hasOrder) whatsappConverted++;
+    const g = sourceSessions.get(s.source) || { total: 0, converted: 0 };
+    g.total++; if (s.hasOrder) g.converted++;
+    sourceSessions.set(s.source, g);
+  }
+  const cartAbandoned = sessionsWithCart - sessionsWithCartConverted;
+  const cartAbandonmentRate = sessionsWithCart > 0 ? (cartAbandoned / sessionsWithCart) * 100 : 0;
+  const bySourceConversion = Array.from(sourceSessions.entries())
+    .map(([key, v]) => ({ key, sessions: v.total, orders: v.converted, conversionRate: v.total > 0 ? (v.converted / v.total) * 100 : 0 }))
+    .sort((a, b) => b.sessions - a.sessions);
 
   // ── daily series ───────────────────────────────────────
   const dayMap = new Map<string, { date: string; pageViews: number; uniqueSessions: number; addToCarts: number; orders: number; revenue: number }>();
@@ -69,7 +99,7 @@ export async function GET(req: NextRequest) {
   for (const [key, set] of Array.from(daySessions)) { const day = dayMap.get(key); if (day) day.uniqueSessions = set.size; }
   const daily = Array.from(dayMap.values());
 
-  // ── top products ────────────────────────────────────────
+  // ── top products (views/carts) ──────────────────────────
   const viewCount = new Map<string, number>();
   const cartCount = new Map<string, number>();
   for (const e of events) {
@@ -87,7 +117,36 @@ export async function GET(req: NextRequest) {
     .sort((a, b) => b.views - a.views)
     .slice(0, 10);
 
-  // ── sources ─────────────────────────────────────────────
+  // ── top products by revenue (from orders) ──────────────
+  const revenueAgg = new Map<string, { productId: string; name: string; revenue: number; qty: number }>();
+  for (const o of orders) {
+    if (REVENUE_EXCLUDE.includes(o.status)) continue;
+    for (const it of o.items) {
+      const key = it.productId || it.name;
+      const r = revenueAgg.get(key) || { productId: it.productId || '', name: it.name, revenue: 0, qty: 0 };
+      r.revenue += it.price * it.quantity;
+      r.qty += it.quantity;
+      revenueAgg.set(key, r);
+    }
+  }
+  const topProductsByRevenue = Array.from(revenueAgg.values())
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 10);
+
+  // ── coupon analytics ───────────────────────────────────
+  const couponAgg = new Map<string, { orders: number; revenue: number }>();
+  for (const o of orders) {
+    if (REVENUE_EXCLUDE.includes(o.status)) continue;
+    if (!o.couponCode) continue;
+    const c = couponAgg.get(o.couponCode) || { orders: 0, revenue: 0 };
+    c.orders++; c.revenue += o.total;
+    couponAgg.set(o.couponCode, c);
+  }
+  const couponAnalytics = Array.from(couponAgg.entries())
+    .map(([code, v]) => ({ code, orders: v.orders, revenue: v.revenue }))
+    .sort((a, b) => b.orders - a.orders);
+
+  // ── sources (page-view based) ──────────────────────────
   const srcMap = new Map<string, number>();
   const refMap = new Map<string, number>();
   const countryMap = new Map<string, number>();
@@ -137,6 +196,11 @@ export async function GET(req: NextRequest) {
     funnel,
     daily,
     topProducts,
+    topProductsByRevenue,
+    couponAnalytics,
+    cartAbandonment: { sessionsWithCart, abandoned: cartAbandoned, rate: cartAbandonmentRate },
+    whatsappAttribution: whatsappConverted,
+    bySourceConversion,
     bySource: toArr(srcMap),
     byReferrer: toArr(refMap),
     byCountry: toArr(countryMap),

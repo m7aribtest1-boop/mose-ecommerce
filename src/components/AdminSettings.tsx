@@ -21,12 +21,18 @@ export default function AdminSettings() {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
 
+  const [totpEnabled, setTotpEnabled] = useState(false);
+  const [totpSetup, setTotpSetup] = useState<{ secret: string; uri: string } | null>(null);
+  const [totpCode, setTotpCode] = useState('');
+  const [totpMsg, setTotpMsg] = useState('');
+
   useEffect(() => {
     fetch('/api/admin/settings', { cache: 'no-store' })
       .then((r) => r.json())
-      .then((d) => {
-        if (d.settings) {
-          setS({
+          .then((d) => {
+            if (d.settings) {
+              setTotpEnabled(Boolean(d.totpEnabled));
+              setS({
             storeName: d.settings.storeName || '',
             whatsappNumber: d.settings.whatsappNumber || '',
             currency: d.settings.currency || '',
@@ -46,6 +52,41 @@ export default function AdminSettings() {
 
   function set(key: string, val: string) {
     setS((prev) => ({ ...prev, [key]: val }));
+  }
+
+  async function startTotp() {
+    setTotpMsg('');
+    const res = await fetch('/api/admin/2fa');
+    const d = await res.json();
+    if (res.ok) setTotpSetup(d);
+    else setTotpMsg(d.error || 'فشل');
+  }
+  async function confirmTotp() {
+    if (!totpSetup) return;
+    setTotpMsg('');
+    const res = await fetch('/api/admin/2fa', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: totpSetup.secret, code: totpCode }),
+    });
+    const d = await res.json();
+    if (!res.ok) { setTotpMsg(d.error || 'فشل'); return; }
+    setTotpEnabled(true);
+    setTotpSetup(null);
+    setTotpCode('');
+    setTotpMsg('✓ تم تفعيل المصادقة الثنائية');
+  }
+  async function disableTotp() {
+    setTotpMsg('');
+    const res = await fetch('/api/admin/2fa', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ disable: true }),
+    });
+    const d = await res.json();
+    if (!res.ok) { setTotpMsg(d.error || 'فشل'); return; }
+    setTotpEnabled(false);
+    setTotpMsg('تم تعطيل المصادقة الثنائية');
   }
 
   async function save() {
@@ -113,6 +154,39 @@ export default function AdminSettings() {
           </button>
           {msg && <div className="text-sm text-primary-600">{msg}</div>}
           <p className="text-xs text-secondary-400">رقم واتساب يظهر فوراً فالزر العائم وباقي أزرار المتجر.</p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+          <h2 className="font-bold text-primary-900">🔐 المصادقة الثنائية (2FA)</h2>
+          {totpEnabled ? (
+            <>
+              <p className="text-sm text-green-600">✓ المصادقة الثنائية مفعّلة على حسابك.</p>
+              <button onClick={disableTotp} className="btn-outline px-5 py-2 text-sm">تعطيل 2FA</button>
+            </>
+          ) : totpSetup ? (
+            <>
+              <p className="text-sm text-secondary-600">امسح الكود بـ Google Authenticator أو أدخل السر يدوياً، ثم أكّد بالرمز:</p>
+              <div className="bg-secondary-50 rounded-lg p-3 text-xs font-mono break-all">{totpSetup.uri}</div>
+              <div>
+                <label className="block text-sm text-secondary-700 mb-1">السر (Secret)</label>
+                <div className="bg-secondary-50 rounded-lg p-2 font-mono text-sm break-all">{totpSetup.secret}</div>
+              </div>
+              <input
+                value={totpCode}
+                onChange={(e) => setTotpCode(e.target.value)}
+                placeholder="123456"
+                inputMode="numeric"
+                className="w-full border border-secondary-300 rounded-lg px-3 py-2 text-center tracking-widest"
+              />
+              <div className="flex gap-2">
+                <button onClick={confirmTotp} className="btn-primary px-5 py-2 text-sm">تأكيد وتفعيل</button>
+                <button onClick={() => setTotpSetup(null)} className="btn-outline px-5 py-2 text-sm">إلغاء</button>
+              </div>
+            </>
+          ) : (
+            <button onClick={startTotp} className="btn-primary px-5 py-2 text-sm">تفعيل 2FA</button>
+          )}
+          {totpMsg && <div className="text-sm text-primary-600">{totpMsg}</div>}
         </div>
       </div>
     </main>

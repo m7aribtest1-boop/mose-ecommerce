@@ -120,6 +120,7 @@ model Order {
   discount          Float         @default(0)
   couponCode        String?
   total             Float
+  sessionId         String?
   items             OrderItem[]
   returnRequests    ReturnRequest[]
   riskScore         Int           @default(0)
@@ -130,6 +131,7 @@ model Order {
   @@index([phone])
   @@index([status])
   @@index([createdAt])
+  @@index([sessionId])
   @@map("orders")
 }
 
@@ -221,9 +223,26 @@ model AdminUser {
   email        String   @unique
   name         String?
   passwordHash String
+  totpSecret   String?
+  totpEnabled  Boolean  @default(false)
   createdAt    DateTime @default(now())
 
   @@map("admin_users")
+}
+
+model AdminNotification {
+  id          String   @id @default(cuid())
+  type        String // new_order | low_stock | system
+  title       String
+  message     String
+  link        String?
+  referenceId String?
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([read])
+  @@index([createdAt])
+  @@map("admin_notifications")
 }
 
 model Review {

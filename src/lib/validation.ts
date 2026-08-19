@@ -9,6 +9,7 @@ export const orderSchema = z.object({
   notes: z.string().trim().max(500).optional().or(z.literal('')),
   paymentMethod: z.enum(['COD', 'CMI', 'CASH_PLUS', 'BANK_TRANSFER']).default('COD'),
   couponCode: z.string().trim().optional().or(z.literal('')),
+  sessionId: z.string().trim().max(64).optional().or(z.literal('')),
   items: z
     .array(
       z.object({

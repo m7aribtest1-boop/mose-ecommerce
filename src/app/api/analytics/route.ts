@@ -6,13 +6,19 @@ const EVENTS = [
   'CHECKOUT_START', 'ORDER_COMPLETE', 'WHATSAPP_CLICK', 'SEARCH',
 ] as const;
 
-const BOT_UA = /bot|crawl|spider|slurp|headless|curl|wget|python-requests|facebookexternalhit|twitterbot|linkedinbot|pinterest/i;
+const BOT_UA = /bot|crawl|spider|slurp|headless|curl|wget|python-requests|go-http|java\/|okhttp|libwww|scrapy|phantom|lighthouse|pingdom|gtmetrix|ahrefs|semrush|mj12|dotbot|petalbot|bytespider|dataprovider|yandex|baidu|sogou|applebot|duckduckbot|bingpreview|facebookexternalhit|twitterbot|linkedinbot|pinterest|whatsapp|telegrambot|slackbot|discordbot|embedly|quora|showyoubot|outbrain|pinterestbot|redditbot|seznambot|ccbot|yeti|yandexbot|blexbot|feedfetcher|wordpress|wp-iphone|jetmon|uptimerobot|statuscake|newrelicpinger/i;
 
 export async function POST(req: NextRequest) {
   // Privacy: honour Do-Not-Track
   if (req.headers.get('dnt') === '1') return NextResponse.json({ skipped: true }, { status: 202 });
   const ua = req.headers.get('user-agent') ?? '';
   if (BOT_UA.test(ua)) return NextResponse.json({ skipped: true }, { status: 202 });
+  // Smarter filter: known monitoring/proxy signals (no DNT, no UA, or internal probes)
+  if (ua === '') return NextResponse.json({ skipped: true }, { status: 202 });
+  const via = req.headers.get('via') ?? '';
+  if (/vercel|cloudflare/i.test(via) && !req.headers.get('cookie')) {
+    return NextResponse.json({ skipped: true }, { status: 202 });
+  }
 
   let body: any;
   try {

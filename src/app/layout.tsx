@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import FloatingWhatsApp from '@/components/FloatingWhatsApp';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
+import ConsentBanner from '@/components/ConsentBanner';
 import './globals.css';
 
 const inter = Inter({
@@ -79,6 +80,7 @@ export default function RootLayout({
           <Footer />
           <FloatingWhatsApp />
           <AnalyticsTracker />
+          <ConsentBanner />
         </div>
       </body>
     </html>

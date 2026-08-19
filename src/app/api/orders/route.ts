@@ -4,7 +4,10 @@ import { createOrder } from '@/lib/orders';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { order, highRisk } = await createOrder(body);
+    const cookieHeader = request.headers.get('cookie') ?? '';
+    const sidMatch = cookieHeader.match(/(?:^|;\s*)_mose_sid=([^;]+)/);
+    const sessionId = sidMatch ? decodeURIComponent(sidMatch[1]) : undefined;
+    const { order, highRisk } = await createOrder({ ...body, sessionId });
     return NextResponse.json(
       {
         order,

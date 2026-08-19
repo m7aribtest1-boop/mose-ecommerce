@@ -95,6 +95,9 @@ export async function createOrder(input: OrderInput) {
   const riskScore = await computeRiskScore(parsed.phone, parsed.city, total);
   const highRisk = isHighRisk(riskScore);
 
+  const LOW_STOCK_THRESHOLD = 3;
+  const lowStockAlerts: { productId: string; name: string; size?: string; stock: number }[] = [];
+
   const order = await prisma.$transaction(async (tx) => {
     // حجز المخزون
     for (const item of parsed.items) {
@@ -105,12 +108,16 @@ export async function createOrder(input: OrderInput) {
         (v) => v.size === item.size && (item.color ? v.color === item.color : true)
       );
       if (variant) {
+        const before = variant.stock;
         const updated = await tx.productVariant.update({
           where: { id: variant.id },
           data: { stock: { decrement: item.quantity } },
         });
         if (updated.stock < 0) {
           throw new Error(`المخزون غير كافٍ لـ ${product.name} (${item.size})`);
+        }
+        if (before > LOW_STOCK_THRESHOLD && updated.stock <= LOW_STOCK_THRESHOLD) {
+          lowStockAlerts.push({ productId: product.id, name: product.name, size: item.size, stock: updated.stock });
         }
       }
     }
@@ -154,6 +161,7 @@ export async function createOrder(input: OrderInput) {
         total,
         riskScore,
         status: highRisk ? 'confirmation_required' : 'pending',
+        sessionId: parsed.sessionId || null,
         items: { create: orderItems },
       },
       include: { items: true },
@@ -165,6 +173,32 @@ export async function createOrder(input: OrderInput) {
       where: { id: coupon.id },
       data: { usedCount: { increment: 1 } },
     });
+  }
+
+  // إشعارات الأدمن (بديل عن الإيميل — يظهر فـ جرس الأدمن)
+  try {
+    await prisma.adminNotification.create({
+      data: {
+        type: 'new_order',
+        title: `طلب جديد ${order.orderNumber}`,
+        message: `${order.customerName} — ${order.total.toFixed(2)} درهم (${order.paymentMethod})`,
+        link: `/admin/orders`,
+        referenceId: order.id,
+      },
+    });
+    for (const a of lowStockAlerts) {
+      await prisma.adminNotification.create({
+        data: {
+          type: 'low_stock',
+          title: `مخزون منخفض: ${a.name}`,
+          message: a.size ? `المقاس ${a.size} — تبقى ${a.stock} فقط` : `تبقى ${a.stock} فقط`,
+          link: `/admin/products`,
+          referenceId: a.productId,
+        },
+      });
+    }
+  } catch {
+    // notifications never block order creation
   }
 
   return { order, highRisk };

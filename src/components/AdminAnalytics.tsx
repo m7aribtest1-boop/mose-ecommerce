@@ -5,6 +5,9 @@ import { useState, useEffect, useCallback } from 'react';
 interface Daily { date: string; pageViews: number; uniqueSessions: number; addToCarts: number; orders: number; revenue: number; }
 interface FunnelStep { step: string; value: number; }
 interface TopProduct { productId: string; name: string; views: number; addToCarts: number; }
+interface TopRevenue { productId: string; name: string; revenue: number; qty: number; }
+interface CouponStat { code: string; orders: number; revenue: number; }
+interface SourceConv { key: string; sessions: number; orders: number; conversionRate: number; }
 interface KeyVal { key: string; value: number; }
 interface AnalyticsData {
   range: { from: string; to: string };
@@ -15,6 +18,11 @@ interface AnalyticsData {
   funnel: FunnelStep[];
   daily: Daily[];
   topProducts: TopProduct[];
+  topProductsByRevenue: TopRevenue[];
+  couponAnalytics: CouponStat[];
+  cartAbandonment: { sessionsWithCart: number; abandoned: number; rate: number };
+  whatsappAttribution: number;
+  bySourceConversion: SourceConv[];
   bySource: KeyVal[]; byReferrer: KeyVal[]; byCountry: KeyVal[]; byCity: KeyVal[]; byDevice: KeyVal[];
 }
 
@@ -38,6 +46,7 @@ export default function AdminAnalytics() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [rollupMsg, setRollupMsg] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true); setError('');
@@ -69,6 +78,17 @@ export default function AdminAnalytics() {
     URL.revokeObjectURL(url);
   }
 
+  async function runRollup() {
+    setRollupMsg('جارٍ التجميع…');
+    try {
+      const res = await fetch('/api/admin/analytics/rollup', { method: 'POST' });
+      const j = await res.json();
+      setRollupMsg(res.ok ? `تم تجميع ${j.days} يوم فـ AggregatedStat.` : 'فشل التجميع');
+    } catch {
+      setRollupMsg('فشل التجميع');
+    }
+  }
+
   const kpis = data
     ? [
         { label: 'مشاهدات الصفحات', value: fmt(data.totals.pageViews), color: 'text-primary-900' },
@@ -79,6 +99,8 @@ export default function AdminAnalytics() {
         { label: 'طلبات', value: fmt(data.totals.orders), color: 'text-green-600' },
         { label: 'نسبة التحويل', value: `${data.totals.conversionRate.toFixed(1)}%`, color: 'text-green-600' },
         { label: 'الإيرادات', value: fmtMoney(data.totals.revenue), color: 'text-green-600' },
+        { label: 'نسبة هجر السلة', value: `${data.cartAbandonment.rate.toFixed(1)}%`, color: 'text-red-600' },
+        { label: 'طلبات عبر واتساب*', value: fmt(data.whatsappAttribution), color: 'text-green-600' },
       ]
     : [];
 
@@ -107,6 +129,8 @@ export default function AdminAnalytics() {
             {loading ? 'جارٍ التحميل…' : 'تطبيق'}
           </button>
           <button onClick={exportCsv} disabled={!data} className="btn-outline px-6 py-2.5 disabled:opacity-50">⬇ تصدير CSV</button>
+          <button onClick={runRollup} className="btn-outline px-6 py-2.5">⚡ تجميع (Rollup)</button>
+          {rollupMsg && <span className="text-xs text-green-600">{rollupMsg}</span>}
           <span className="text-xs text-secondary-400 mr-auto">البيانات بدون معلومات شخصية — فقط إحصائيات مجهولة.</span>
         </div>
 
@@ -140,6 +164,102 @@ export default function AdminAnalytics() {
                     </div>
                   );
                 })}
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h2 className="font-bold text-primary-900 mb-3">هجر السلة (Cart Abandonment)</h2>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-bold text-red-600">{data.cartAbandonment.rate.toFixed(1)}%</span>
+                  <span className="text-sm text-secondary-500">من الجلسات اللي زادت فالسلة</span>
+                </div>
+                <p className="text-sm text-secondary-600 mt-2">
+                  جلسات زادت فالسلة: <b>{fmt(data.cartAbandonment.sessionsWithCart)}</b> — ما كملوش: <b>{fmt(data.cartAbandonment.abandoned)}</b>
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h2 className="font-bold text-primary-900 mb-3">التحويل حسب المصدر</h2>
+                {data.bySourceConversion.length === 0 ? (
+                  <p className="text-secondary-400 text-sm">لا توجد بيانات</p>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-secondary-500 text-right">
+                        <th className="pb-2 font-medium">المصدر</th>
+                        <th className="pb-2 font-medium">جلسات</th>
+                        <th className="pb-2 font-medium">طلبات</th>
+                        <th className="pb-2 font-medium">تحويل</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.bySourceConversion.slice(0, 8).map((s) => (
+                        <tr key={s.key} className="border-t border-secondary-100">
+                          <td className="py-2 text-primary-900 truncate max-w-[140px]" title={s.key}>{s.key}</td>
+                          <td className="py-2 text-center">{fmt(s.sessions)}</td>
+                          <td className="py-2 text-center text-green-600">{fmt(s.orders)}</td>
+                          <td className="py-2 text-center font-bold text-green-600">{s.conversionRate.toFixed(1)}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h2 className="font-bold text-primary-900 mb-3">المنتجات الأكثر إيراداً</h2>
+                {data.topProductsByRevenue.length === 0 ? (
+                  <p className="text-secondary-400 text-sm">لا توجد مبيعات فهذه الفترة</p>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-secondary-500 text-right">
+                        <th className="pb-2 font-medium">المنتج</th>
+                        <th className="pb-2 font-medium">كمية</th>
+                        <th className="pb-2 font-medium">إيرادات</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.topProductsByRevenue.map((p) => (
+                        <tr key={p.productId} className="border-t border-secondary-100">
+                          <td className="py-2 text-primary-900 truncate max-w-[180px]" title={p.name}>{p.name}</td>
+                          <td className="py-2 text-center">{fmt(p.qty)}</td>
+                          <td className="py-2 text-center text-green-600">{fmtMoney(p.revenue)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h2 className="font-bold text-primary-900 mb-3">أداء الكوبونات</h2>
+                {data.couponAnalytics.length === 0 ? (
+                  <p className="text-secondary-400 text-sm">لا كوبونات استعملت فهذه الفترة</p>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-secondary-500 text-right">
+                        <th className="pb-2 font-medium">الكود</th>
+                        <th className="pb-2 font-medium">استخدامات</th>
+                        <th className="pb-2 font-medium">إيرادات</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.couponAnalytics.map((c) => (
+                        <tr key={c.code} className="border-t border-secondary-100">
+                          <td className="py-2 text-primary-900 font-mono">{c.code}</td>
+                          <td className="py-2 text-center">{fmt(c.orders)}</td>
+                          <td className="py-2 text-center text-green-600">{fmtMoney(c.revenue)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+                <p className="text-xs text-secondary-400 mt-3">* طلبات عبر واتساب = جلسات نقرات واتساب وكتم الطلب (تقديري).</p>
               </div>
             </div>
 

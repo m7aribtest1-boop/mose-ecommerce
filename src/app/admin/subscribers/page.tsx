@@ -6,14 +6,29 @@ import SubscribersExport from '@/components/SubscribersExport';
 export const metadata = { title: 'المشتركون | لوحة الإدارة' };
 export const dynamic = 'force-dynamic';
 
-export default async function AdminSubscribersPage() {
+export default async function AdminSubscribersPage({
+  searchParams,
+}: {
+  searchParams?: { city?: string };
+}) {
   const admin = await getAdminSession();
   if (!admin) redirect('/admin/login');
 
-  const subscribers = await prisma.subscriber.findMany({
-    orderBy: { createdAt: 'desc' },
-    take: 1000,
-  });
+  const city = (searchParams?.city || '').trim();
+  const [subscribers, cityRows] = await Promise.all([
+    prisma.subscriber.findMany({
+      where: city ? { city } : {},
+      orderBy: { createdAt: 'desc' },
+      take: 2000,
+    }),
+    prisma.subscriber.findMany({
+      distinct: ['city'],
+      where: { city: { not: null } },
+      select: { city: true },
+      orderBy: { city: 'asc' },
+    }),
+  ]);
+  const cities = cityRows.map((c) => c.city as string);
 
   const rows = subscribers.map((s) => ({
     email: s.email,
@@ -31,9 +46,23 @@ export default async function AdminSubscribersPage() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between gap-4 mb-5 flex-wrap">
           <h2 className="font-bold text-primary-900">الإجمالي: {subscribers.length}</h2>
-          <SubscribersExport rows={rows} />
+          <div className="flex items-center gap-2">
+            <form method="get" className="flex items-center gap-2">
+              <select name="city" defaultValue={city} className="border border-secondary-300 rounded-lg px-3 py-2 text-sm">
+                <option value="">كل المدن</option>
+                {cities.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <button type="submit" className="btn-primary px-4 py-2 text-sm">تصفية</button>
+              {city && (
+                <a href="/admin/subscribers" className="text-primary-600 hover:underline text-sm">مسح</a>
+              )}
+            </form>
+            <SubscribersExport rows={rows} />
+          </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">

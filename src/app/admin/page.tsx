@@ -56,6 +56,8 @@ export default async function AdminPage() {
     return acc;
   }, {});
 
+  const unreadNotifications = await prisma.adminNotification.count({ where: { read: false } });
+
   const stats = [
     { label: 'إجمالي الإيرادات', value: `${(revenueAgg._sum.total ?? 0).toLocaleString('fr-MA')} درهم`, color: 'text-green-600' },
     { label: 'طلبات اليوم', value: todayOrdersCount, color: 'text-primary-600' },
@@ -74,6 +76,12 @@ export default async function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-xl font-bold text-primary-900">لوحة إدارة موسى</h1>
           <div className="flex items-center gap-4 text-sm">
+            <Link href="/admin/notifications" className="relative text-primary-600 hover:underline">
+              🔔 الإشعارات
+              {unreadNotifications > 0 && (
+                <span className="absolute -top-2 -right-3 bg-red-600 text-white text-[10px] rounded-full px-1.5 py-0.5">{unreadNotifications}</span>
+              )}
+            </Link>
             <span className="text-secondary-500">{admin.email}</span>
             <Link href="/" className="text-primary-600 hover:underline">المتجر ←</Link>
           </div>
@@ -164,6 +172,13 @@ export default async function AdminPage() {
             <div className="text-3xl mb-2">📧</div>
             <div className="font-bold text-primary-900">المشتركون</div>
             <div className="text-sm text-secondary-500 mt-1">النشرة البريدية + المدن</div>
+          </Link>
+          <Link href="/admin/notifications" className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+            <div className="text-3xl mb-2">🔔</div>
+            <div className="font-bold text-primary-900">الإشعارات</div>
+            <div className="text-sm text-secondary-500 mt-1">
+              {unreadNotifications > 0 ? `${unreadNotifications} غير مقروء` : 'لا جديد'}
+            </div>
           </Link>
         </div>
       </div>

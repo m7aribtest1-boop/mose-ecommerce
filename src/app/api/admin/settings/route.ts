@@ -14,7 +14,7 @@ export async function GET() {
   const admin = await getAdminSession();
   if (!admin) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 });
   const s = await getStoreSettings();
-  return NextResponse.json({ settings: s });
+  return NextResponse.json({ settings: s, totpEnabled: admin.totpEnabled });
 }
 
 export async function PUT(request: Request) {

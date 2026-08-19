@@ -2,6 +2,23 @@
 
 const SESSION_KEY = '_mose_sid';
 const SESSION_MAX_AGE = 60 * 60 * 24; // 1 day → rotates daily
+export const CONSENT_KEY = '_mose_consent';
+const CONSENT_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
+
+export type ConsentValue = 'granted' | 'denied';
+
+export function getConsent(): ConsentValue | null {
+  if (typeof document === 'undefined') return null;
+  const c = document.cookie
+    .split('; ')
+    .find((x) => x.startsWith(CONSENT_KEY + '='));
+  return c ? (c.split('=')[1] as ConsentValue) : null;
+}
+
+export function setConsent(value: ConsentValue) {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${CONSENT_KEY}=${value}; path=/; max-age=${CONSENT_MAX_AGE}; samesite=lax`;
+}
 
 export type TrackType =
   | 'PAGE_VIEW'
@@ -25,10 +42,11 @@ export function getSessionId(): string {
   return sid;
 }
 
-/** Fire an analytics event. Respects Do-Not-Track. Fire-and-forget. */
+/** Fire an analytics event. Respects Do-Not-Track + explicit consent (opt-in). Fire-and-forget. */
 export function track(type: TrackType, data: Record<string, unknown> = {}) {
   if (typeof window === 'undefined') return;
   if (navigator.doNotTrack === '1') return; // privacy: honour DNT
+  if (getConsent() !== 'granted') return; // privacy: opt-in consent required
   const params = new URLSearchParams(window.location.search);
   const payload = {
     type,

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
+import { track } from '@/lib/analytics';
 
 const navLinks = [
   { href: '/', label: 'الرئيسية' },
@@ -130,7 +131,10 @@ export function Header() {
             onSubmit={(e) => {
               e.preventDefault();
               const q = search.trim();
-              if (q) router.push(`/products?q=${encodeURIComponent(q)}`);
+              if (q) {
+                track('SEARCH', { query: q });
+                router.push(`/products?q=${encodeURIComponent(q)}`);
+              }
               setSearchOpen(false);
             }}
           >
