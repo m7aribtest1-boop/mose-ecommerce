@@ -7,7 +7,7 @@ export const orderSchema = z.object({
   city: z.string().trim().min(2, 'المدينة مطلوبة'),
   address: z.string().trim().optional().or(z.literal('')),
   notes: z.string().trim().max(500).optional().or(z.literal('')),
-  paymentMethod: z.enum(['COD', 'CMI', 'CASH_PLUS', 'BANK_TRANSFER']).default('COD'),
+  paymentMethod: z.enum(['COD']).default('COD'),
   couponCode: z.string().trim().optional().or(z.literal('')),
   sessionId: z.string().trim().max(64).optional().or(z.literal('')),
   items: z

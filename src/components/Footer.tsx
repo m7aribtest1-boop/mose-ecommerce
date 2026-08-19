@@ -76,7 +76,6 @@ export function Footer() {
           <p>© {new Date().getFullYear()} متجر موسى. جميع الحقوق محفوظة.</p>
           <div className="flex items-center gap-4">
             <span>الدفع عند الاستلام</span>
-            <span>CMI</span>
             <span>دعم 24/7</span>
           </div>
         </div>

@@ -134,8 +134,6 @@ export default function CartPage() {
                 </Link>
                 <div className="mt-4 flex justify-center gap-3 text-xs text-secondary-500">
                   <span className="bg-secondary-100 px-2 py-1 rounded">الدفع عند الاستلام</span>
-                  <span className="bg-secondary-100 px-2 py-1 rounded">CMI</span>
-                  <span className="bg-secondary-100 px-2 py-1 rounded">بطاقة بنكية</span>
                 </div>
               </div>
             </div>

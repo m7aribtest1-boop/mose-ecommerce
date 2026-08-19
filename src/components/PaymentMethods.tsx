@@ -1,10 +1,6 @@
 export function PaymentMethods({ className = '' }: { className?: string }) {
   const methods = [
     { label: 'الدفع عند الاستلام', icon: '💵' },
-    { label: 'CMI', icon: '🔒' },
-    { label: 'Visa', icon: '💳' },
-    { label: 'Mastercard', icon: '💳' },
-    { label: 'PayPal', icon: '🌐' },
   ];
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>

@@ -145,9 +145,6 @@ export default function CheckoutPage() {
               <div className="space-y-3">
                 {[
                   { id: 'COD', title: 'الدفع عند الاستلام', desc: 'ادفع نقداً عند استلام طلبك — الأكثر استعمالاً في المغرب' },
-                  { id: 'CMI', title: 'بطاقة بنكية (CMI)', desc: 'بدفع آمن عبر البوابة الإلكترونية' },
-                  { id: 'CASH_PLUS', title: 'الدفع نقداً في وكالة Cash Plus', desc: 'ادفع عبر وكالة بشركة كاش بلس' },
-                  { id: 'BANK_TRANSFER', title: 'تحويل بنكي', desc: 'للطلبات الكبيرة والدياسبورا' },
                 ].map((p) => (
                   <label key={p.id}
                     className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition ${paymentMethod === p.id ? 'border-primary-500 bg-primary-50' : 'border-secondary-200 hover:border-primary-300'}`}>
