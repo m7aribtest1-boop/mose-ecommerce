@@ -143,6 +143,11 @@ export default async function AdminPage() {
             <div className="font-bold text-primary-900">العملاء</div>
             <div className="text-sm text-secondary-500 mt-1">سجل الطلبات وتقييم المخاطر</div>
           </Link>
+          <Link href="/admin/analytics" className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+            <div className="text-3xl mb-2">📊</div>
+            <div className="font-bold text-primary-900">تحليلات المتجر</div>
+            <div className="text-sm text-secondary-500 mt-1">زوار، مسار تحويل، مصادر، أفضل المنتجات</div>
+          </Link>
         </div>
       </div>
     </main>
