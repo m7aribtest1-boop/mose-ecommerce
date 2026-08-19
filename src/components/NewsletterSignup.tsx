@@ -2,8 +2,14 @@
 
 import { useState } from 'react';
 
+const CITIES = [
+  'الدار البيضاء', 'الرباط', 'فاس', 'مراكش', 'أكادير', 'طنجة', 'وجدة', 'تطوان',
+  'آسفي', 'الجديدة', 'القنيطرة', 'سطات', 'مكناس', 'الرشيدية', 'ورزازات', 'أخرى / أجنبي',
+];
+
 export default function NewsletterSignup() {
   const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
   const [msg, setMsg] = useState('');
 
@@ -15,12 +21,13 @@ export default function NewsletterSignup() {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, city: city || undefined }),
       });
       if (!res.ok) throw new Error();
       setStatus('ok');
       setMsg('تم اشتراكك ✓ ستصلك آخر التصاميم والعروض.');
       setEmail('');
+      setCity('');
     } catch {
       setStatus('error');
       setMsg('تعذر الاشتراك، حاول مجدداً.');
@@ -56,6 +63,17 @@ export default function NewsletterSignup() {
               placeholder="بريدك الإلكتروني"
               className="flex-1 px-4 py-3 border border-secondary-300 focus:border-primary-600 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-white text-right placeholder:text-secondary-400"
             />
+            <select
+              name="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="px-4 py-3 border border-secondary-300 focus:border-primary-600 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-white text-right"
+            >
+              <option value="">المدينة (اختياري)</option>
+              {CITIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
             <button
               type="submit"
               disabled={status === 'sending'}

@@ -15,7 +15,7 @@ interface AnalyticsData {
   funnel: FunnelStep[];
   daily: Daily[];
   topProducts: TopProduct[];
-  bySource: KeyVal[]; byReferrer: KeyVal[]; byCountry: KeyVal[]; byDevice: KeyVal[];
+  bySource: KeyVal[]; byReferrer: KeyVal[]; byCountry: KeyVal[]; byCity: KeyVal[]; byDevice: KeyVal[];
 }
 
 function toInputDate(d: Date) {
@@ -188,6 +188,8 @@ export default function AdminAnalytics() {
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h2 className="font-bold text-primary-900 mb-3">مصادر الزيارات (UTM)</h2>
                 <SourceList items={data.bySource} />
+                <h3 className="font-semibold text-primary-700 mt-4 mb-2 text-sm">حسب المدينة</h3>
+                <SourceList items={data.byCity} />
                 <h3 className="font-semibold text-primary-700 mt-4 mb-2 text-sm">حسب الدولة</h3>
                 <SourceList items={data.byCountry} />
               </div>

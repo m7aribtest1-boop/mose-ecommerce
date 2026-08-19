@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     where: { createdAt: { gte: from, lte: to } },
     select: {
       type: true, sessionId: true, productId: true,
-      utmSource: true, referrer: true, country: true, device: true, createdAt: true,
+      utmSource: true, referrer: true, country: true, city: true, device: true, createdAt: true,
     },
   });
 
@@ -91,6 +91,7 @@ export async function GET(req: NextRequest) {
   const srcMap = new Map<string, number>();
   const refMap = new Map<string, number>();
   const countryMap = new Map<string, number>();
+  const cityMap = new Map<string, number>();
   const deviceMap = new Map<string, number>();
   for (const e of events) {
     if (e.type !== 'PAGE_VIEW') continue;
@@ -101,6 +102,8 @@ export async function GET(req: NextRequest) {
     }
     const c = e.country || 'غير معروف';
     countryMap.set(c, (countryMap.get(c) || 0) + 1);
+    const ci = e.city || 'غير معروف';
+    cityMap.set(ci, (cityMap.get(ci) || 0) + 1);
     const dv = e.device || 'unknown';
     deviceMap.set(dv, (deviceMap.get(dv) || 0) + 1);
   }
@@ -137,6 +140,7 @@ export async function GET(req: NextRequest) {
     bySource: toArr(srcMap),
     byReferrer: toArr(refMap),
     byCountry: toArr(countryMap),
+    byCity: toArr(cityMap),
     byDevice: toArr(deviceMap),
   });
 }

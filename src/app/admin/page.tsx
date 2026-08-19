@@ -26,7 +26,7 @@ export default async function AdminPage() {
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const [orders, todayOrdersCount, revenueAgg, todayRevenueAgg, productsCount, customersCount, pendingCount, lowStockVariants, pageViewsToday, uniqueSessionsToday, addToCartsToday, checkoutStartsToday, whatsappClicksToday] =
+  const [orders, todayOrdersCount, revenueAgg, todayRevenueAgg, productsCount, customersCount, pendingCount, lowStockVariants, subscribersCount, pageViewsToday, uniqueSessionsToday, addToCartsToday, checkoutStartsToday, whatsappClicksToday] =
     await Promise.all([
       prisma.order.findMany({ orderBy: { createdAt: 'desc' }, take: 500 }),
       prisma.order.count({ where: { createdAt: { gte: todayStart } } }),
@@ -39,6 +39,7 @@ export default async function AdminPage() {
       prisma.customer.count(),
       prisma.order.count({ where: { status: { in: ['pending', 'confirmation_required'] } } }),
       prisma.productVariant.count({ where: { stock: { lte: 2 } } }),
+      prisma.subscriber.count(),
       prisma.analyticsEvent.count({ where: { type: 'PAGE_VIEW', createdAt: { gte: todayStart } } }),
       prisma.analyticsEvent.findMany({
         where: { type: 'PAGE_VIEW', createdAt: { gte: todayStart } },
@@ -63,6 +64,7 @@ export default async function AdminPage() {
     { label: 'إجمالي الطلبات', value: orders.length, color: 'text-primary-900' },
     { label: 'المنتجات', value: productsCount, color: 'text-primary-900' },
     { label: 'العملاء', value: customersCount, color: 'text-primary-900' },
+    { label: 'المشتركون', value: subscribersCount, color: 'text-primary-600' },
     { label: 'مخزون منخفض (≤2)', value: lowStockVariants, color: 'text-red-600' },
   ];
 
@@ -157,6 +159,11 @@ export default async function AdminPage() {
             <div className="text-3xl mb-2">🛡️</div>
             <div className="font-bold text-primary-900">سجل الأحداث الأمني</div>
             <div className="text-sm text-secondary-500 mt-1">دخول، تغييرات الطلبات، الإعدادات</div>
+          </Link>
+          <Link href="/admin/subscribers" className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+            <div className="text-3xl mb-2">📧</div>
+            <div className="font-bold text-primary-900">المشتركون</div>
+            <div className="text-sm text-secondary-500 mt-1">النشرة البريدية + المدن</div>
           </Link>
         </div>
       </div>

@@ -2,8 +2,14 @@
 
 import { useState } from 'react';
 
+const CITIES = [
+  'الدار البيضاء', 'الرباط', 'فاس', 'مراكش', 'أكادير', 'طنجة', 'وجدة', 'تطوان',
+  'آسفي', 'الجديدة', 'القنيطرة', 'سطات', 'مكناس', 'الرشيدية', 'ورزازات', 'أخرى / أجنبي',
+];
+
 export function NewsletterSection() {
   const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
@@ -15,16 +21,17 @@ export function NewsletterSection() {
     setMessage('');
     
     try {
-      const response = await fetch('/api/newsletter', {
+      const response = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, city: city || undefined }),
       });
       
       if (response.ok) {
         setStatus('success');
         setMessage('تم الاشتراك بنجاح! ستصلك أحدث العروض والأخبار.');
         setEmail('');
+        setCity('');
       } else {
         throw new Error('فشل الاشتراك');
       }
@@ -67,6 +74,16 @@ export function NewsletterSection() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
+            <select
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="px-4 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent-400 transition-all"
+            >
+              <option value="" className="text-secondary-700">المدينة</option>
+              {CITIES.map((c) => (
+                <option key={c} value={c} className="text-secondary-700">{c}</option>
+              ))}
+            </select>
             <button
               type="submit"
               className="btn-primary px-8 py-4 whitespace-nowrap"

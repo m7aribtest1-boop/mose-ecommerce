@@ -35,6 +35,8 @@ export async function POST(req: NextRequest) {
     : 'desktop';
   const country =
     req.headers.get('x-vercel-ip-country') || req.headers.get('cf-ipcountry') || null;
+  const city =
+    req.headers.get('x-vercel-ip-city') || req.headers.get('cf-ipcity') || null;
 
   try {
     await prisma.analyticsEvent.create({
@@ -50,6 +52,7 @@ export async function POST(req: NextRequest) {
         utmCampaign: body.utmCampaign ? String(body.utmCampaign).slice(0, 100) : null,
         device,
         country,
+        city: city ? city.slice(0, 100) : null,
       },
     });
   } catch {
