@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/hooks/useCart';
 import { formatPrice } from '@/lib/utils';
-import { storeConfig } from '@/lib/store';
 import { track } from '@/lib/analytics';
+import { useWhatsappNumber } from '@/hooks/useWhatsapp';
 
 interface Variant { id: string; size: string; color?: string | null; stock: number; price?: number | null; sku: string; }
 export interface BuyProps {
@@ -19,6 +19,7 @@ export interface BuyProps {
 export default function BuyBox({ product }: BuyProps) {
   const router = useRouter();
   const { addItem } = useCart();
+  const wa = useWhatsappNumber();
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
@@ -103,7 +104,7 @@ export default function BuyBox({ product }: BuyProps) {
           ))}
         </div>
         <Link
-          href={`https://wa.me/${storeConfig.whatsapp.number}?text=${encodeURIComponent(`السلام عليكم، بغيت المساعدة فـ المقاس ديال: ${product.name}`)}`}
+          href={`https://wa.me/${wa}?text=${encodeURIComponent(`السلام عليكم، بغيت المساعدة فـ المقاس ديال: ${product.name}`)}`}
           target="_blank" rel="noreferrer"
           onClick={() => track('WHATSAPP_CLICK', { productId: product.id })}
           className="text-sm text-accent-600 hover:underline mt-2 inline-block"
@@ -127,7 +128,7 @@ export default function BuyBox({ product }: BuyProps) {
       <div className="flex gap-3 mb-5">
         <button onClick={handleBuyNow} className="flex-1 btn-primary py-4 text-lg">اشترِ الآن</button>
         <a
-          href={`https://wa.me/${storeConfig.whatsapp.number}?text=${encodeURIComponent(waMessage)}`}
+          href={`https://wa.me/${wa}?text=${encodeURIComponent(waMessage)}`}
           target="_blank" rel="noreferrer"
           onClick={() => track('WHATSAPP_CLICK', { productId: product.id })}
           className="flex-1 btn-outline py-4 text-lg rounded-xl flex items-center justify-center transition"

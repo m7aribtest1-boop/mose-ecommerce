@@ -1,12 +1,13 @@
 'use client';
 
 import { MessageCircle } from 'lucide-react';
-import { storeConfig } from '@/lib/store';
+import { useWhatsappNumber } from '@/hooks/useWhatsapp';
 import { track } from '@/lib/analytics';
 
 export default function FloatingWhatsApp() {
+  const wa = useWhatsappNumber();
   const message = encodeURIComponent('السلام عليكم، أريد الاستفسار عن منتجاتكم في متجر MOSE');
-  const href = `https://wa.me/${storeConfig.whatsapp.number}?text=${message}`;
+  const href = `https://wa.me/${wa}?text=${message}`;
 
   return (
     <a

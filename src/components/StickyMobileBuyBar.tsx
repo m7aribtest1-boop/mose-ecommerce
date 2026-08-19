@@ -2,7 +2,7 @@
 
 import { MessageCircle, ShoppingBag } from 'lucide-react';
 import { useCallback } from 'react';
-import { storeConfig } from '@/lib/store';
+import { useWhatsappNumber } from '@/hooks/useWhatsapp';
 
 interface StickyMobileBuyBarProps {
   price: number;
@@ -20,7 +20,7 @@ export default function StickyMobileBuyBar({
     }
   }, []);
 
-  const whatsappNumber = storeConfig.whatsapp.number;
+  const whatsappNumber = useWhatsappNumber();
   const whatsappMessage = encodeURIComponent(`السلام عليكم، أريد الاستفسار عن ${productName}.`);
   const whatsappUrl = whatsappNumber
     ? `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${whatsappMessage}`

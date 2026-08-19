@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
+import { logAdmin, getClientIp } from '@/lib/audit';
 
 export async function GET() {
   const admin = await getAdminSession();
@@ -53,6 +54,12 @@ export async function POST(request: Request) {
       }
     }
 
+    await logAdmin('PRODUCT_CREATE', {
+      userId: admin.id,
+      ip: getClientIp(request),
+      userAgent: request.headers.get('user-agent') || null,
+      metadata: { productId: product.id, name: product.name },
+    });
     return NextResponse.json({ product }, { status: 201 });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'خطأ' }, { status: 400 });

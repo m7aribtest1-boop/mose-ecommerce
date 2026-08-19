@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
 import { updateOrderStatus, refundOrder } from '@/lib/orders';
+import { logAdmin, getClientIp } from '@/lib/audit';
 
 export async function GET(request: Request) {
   const admin = await getAdminSession();
@@ -34,6 +35,8 @@ export async function GET(request: Request) {
 export async function PATCH(request: Request) {
   const admin = await getAdminSession();
   if (!admin) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 });
+  const ip = getClientIp(request);
+  const ua = request.headers.get('user-agent') || null;
 
   try {
     const { id, status, action } = await request.json();
@@ -41,6 +44,7 @@ export async function PATCH(request: Request) {
 
     if (action === 'refund') {
       await refundOrder(id);
+      await logAdmin('ORDER_REFUND', { userId: admin.id, ip, userAgent: ua, metadata: { orderId: id } });
       return NextResponse.json({ ok: true });
     }
 
@@ -53,7 +57,12 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'حالة غير صالحة' }, { status: 400 });
     }
 
+    const before = await prisma.order.findUnique({ where: { id }, select: { status: true } });
     const updated = await updateOrderStatus(id, status);
+    await logAdmin('ORDER_STATUS_CHANGE', {
+      userId: admin.id, ip, userAgent: ua,
+      metadata: { orderId: id, from: before?.status, to: status },
+    });
     return NextResponse.json({ ok: true, order: updated });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'خطأ' }, { status: 400 });
