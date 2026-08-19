@@ -153,6 +153,11 @@ export default async function AdminPage() {
             <div className="font-bold text-primary-900">إعدادات المتجر</div>
             <div className="text-sm text-secondary-500 mt-1">واتساب، النصوص، العملة، الشبكات</div>
           </Link>
+          <Link href="/admin/audit" className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+            <div className="text-3xl mb-2">🛡️</div>
+            <div className="font-bold text-primary-900">سجل الأحداث الأمني</div>
+            <div className="text-sm text-secondary-500 mt-1">دخول، تغييرات الطلبات، الإعدادات</div>
+          </Link>
         </div>
       </div>
     </main>
