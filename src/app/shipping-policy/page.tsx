@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   title: 'سياسة الشحن والتوصيل | متجر موسى',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function ShippingPolicyPage() {
   const settings = await getStoreSettings();
   return (

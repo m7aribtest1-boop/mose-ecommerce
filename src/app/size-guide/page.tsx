@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: 'كيف تختار مقاسك المناسب في الجلابة والقفطان والتكشيطة المغربية — دليل شامل بالمقاسات',
 };
 
+export const dynamic = 'force-dynamic';
+
 const tables = [
   {
     title: 'الجلابة',

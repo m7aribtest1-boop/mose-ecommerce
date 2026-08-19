@@ -13,6 +13,8 @@ import HomeMobileCta from '@/components/HomeMobileCta';
 import { EditorialEdit, type EditProduct } from '@/components/EditorialEdit';
 import { getStoreSettings } from '@/lib/store-settings';
 
+export const dynamic = 'force-dynamic';
+
 export const revalidate = 300;
 
 function toCard(p: {
