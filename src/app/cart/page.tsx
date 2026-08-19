@@ -23,7 +23,7 @@ export default function CartPage() {
         </section>
         <section className="py-20 bg-secondary-50">
           <div className="container-custom max-w-lg text-center">
-            <div className="text-6xl mb-6">🛒</div>
+            <div className="text-6xl mb-6"><svg className="w-16 h-16 mx-auto text-secondary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg></div>
             <h2 className="text-2xl font-bold text-primary-900 mb-3">سلتك فارغة</h2>
             <p className="text-secondary-600 mb-8">اكتشف تشكيلتنا من الجلابة والقفطان المغربي الأصيل</p>
             <Link href="/products" className="btn-primary px-10 py-4 inline-block">تصفح المنتجات</Link>

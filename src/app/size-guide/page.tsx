@@ -100,7 +100,7 @@ export default async function SizeGuidePage() {
           ))}
 
           <div className="card p-6 bg-accent-50 border-accent-200">
-            <h2 className="text-xl font-bold text-primary-900 mb-2">💬 متحيرة في المقاس؟</h2>
+            <h2 className="text-xl font-bold text-primary-900 mb-2">متحيرة في المقاس؟</h2>
             <p className="text-secondary-700 text-sm mb-4">
               صيفطي لينا طولك ووزنك التقريبي على واتساب، ومستشارتنا تجاوبك بالمقاس المناسب خلال ساعات.
             </p>

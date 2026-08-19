@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import BuyBox from '@/components/BuyBox';
+import { ProductGallery } from '@/components/ProductGallery';
 import { ProductCard } from '@/components/ProductCard';
 import ProductAccordion from '@/components/ProductAccordion';
 import { ProductReviews } from '@/components/ProductReviews';
@@ -54,6 +55,15 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   const primaryImage = product.image || '/products/placeholder.jpg';
 
+  const images = (() => {
+    try {
+      const arr = JSON.parse(product.images || '[]');
+      return Array.isArray(arr) ? arr.filter(Boolean) : [];
+    } catch {
+      return [];
+    }
+  })();
+
   return (
     <main className="flex-1 pb-24 md:pb-0">
       <section className="py-8 bg-secondary-50">
@@ -73,17 +83,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           </nav>
 
           <div className="grid lg:grid-cols-2 gap-10">
-            <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-secondary-100">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={product.images && product.images !== '[]' ? JSON.parse(product.images)[0] || primaryImage : primaryImage}
-                alt={product.name}
-                className="w-full h-full object-cover img-reveal"
-              />
-              {product.badge && (
-                <div className="absolute top-4 right-4 bg-primary-600 text-white text-sm font-medium px-3 py-1 rounded-full">{product.badge}</div>
-              )}
-            </div>
+            <ProductGallery images={images} name={product.name} primaryImage={primaryImage} badge={product.badge} />
 
             <div>
               <div className="flex items-center gap-3 mb-3">
@@ -110,7 +110,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
               </div>
 
               {storeConfig.prepaid.enabled && (
-                <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 border border-green-100 rounded-lg px-3 py-2 mb-6">
+                <div className="flex items-center gap-2 text-sm text-accent-700 bg-accent-50 border border-accent-100 rounded-lg px-3 py-2 mb-6">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9V9h2v4zm0-6H9V5h2v2z" /></svg>
                   {storeConfig.prepaid.note}
                 </div>

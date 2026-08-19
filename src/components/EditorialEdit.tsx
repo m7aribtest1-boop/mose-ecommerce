@@ -34,7 +34,7 @@ export function EditorialEdit({
           <h2 className="text-3xl md:text-4xl font-bold text-primary-900 mb-3">{title}</h2>
           <p className="text-secondary-600 leading-relaxed">{description}</p>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

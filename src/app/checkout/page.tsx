@@ -74,7 +74,7 @@ export default function CheckoutPage() {
     return (
       <main className="flex-1 bg-secondary-50 py-20">
         <div className="container-custom max-w-lg text-center">
-          <div className="text-6xl mb-6">🛒</div>
+          <div className="text-6xl mb-6"><svg className="w-16 h-16 mx-auto text-secondary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg></div>
           <h1 className="text-2xl font-bold mb-3">سلتك فارغة</h1>
           <Link href="/products" className="btn-primary inline-block px-10 py-4">تصفح المنتجات</Link>
         </div>
@@ -95,7 +95,8 @@ export default function CheckoutPage() {
         <div className="container-custom max-w-4xl">
           {sizeConflicts.length > 0 && (
             <div className="bg-accent-50 border border-accent-300 text-accent-800 rounded-lg p-4 mb-6 text-sm">
-              ⚠ بعض المنتجات في سلتك بدون مقاس محدد: <b>{sizeConflicts.join('، ')}</b> — يمكنك المتابعة، وسنتواصل معك لتأكيد المقاس.
+              <svg className="w-4 h-4 inline-block align-[-2px]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+              بعض المنتجات في سلتك بدون مقاس محدد: <b>{sizeConflicts.join('، ')}</b> — يمكنك المتابعة، وسنتواصل معك لتأكيد المقاس.
             </div>
           )}
           <form onSubmit={handleSubmit}>
@@ -157,8 +158,8 @@ export default function CheckoutPage() {
                   </label>
                 ))}
               </div>
-              <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-800">
-                📞 سيتم تأكيد طلبك هاتفياً أو عبر واتساب قبل الشحن — حماية من الطلبات الوهمية وضمان وصولك.
+              <div className="mt-4 bg-accent-50 border border-accent-200 rounded-lg p-3 text-xs text-accent-800">
+                سيتم تأكيد طلبك هاتفياً أو عبر واتساب قبل الشحن — حماية من الطلبات الوهمية وضمان وصولك.
               </div>
             </div>
 

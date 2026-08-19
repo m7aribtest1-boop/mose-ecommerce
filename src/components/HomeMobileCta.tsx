@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function HomeMobileCta() {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-accent-300/70 bg-ivory/95 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_35px_rgba(2,44,34,0.15)] backdrop-blur-md md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-accent-300/70 bg-ivory/95 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_35px_rgba(28,27,25,0.15)] backdrop-blur-md md:hidden">
       <div className="mx-auto flex max-w-lg items-center gap-2">
         <Link
           href="/products"

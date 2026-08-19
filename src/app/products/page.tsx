@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import { ProductCard } from '@/components/ProductCard';
 
@@ -53,19 +54,19 @@ export default async function ProductsPage({ searchParams }: { searchParams?: { 
               <div className="bg-white rounded-xl p-4 border border-secondary-100 sticky top-24">
                 <h3 className="font-semibold text-primary-900 mb-4">الفئة</h3>
                 <div className="space-y-2">
-                  <a href="/products" className="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium bg-primary-600 text-white">
+                  <Link href="/products" className="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium bg-primary-600 text-white">
                     <span>الكل</span>
                     <span className="bg-white/20 px-2 rounded-full text-xs">{allProducts.length}</span>
-                  </a>
+                  </Link>
                   {categories.map((c) => (
-                    <a
+                    <Link
                       key={c.id}
                       href={`/categories/${c.id}`}
                       className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-secondary-700 hover:bg-secondary-50"
                     >
                       <span>{c.name}</span>
                       <span className="text-secondary-400 text-xs">{c._count.products}</span>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -80,7 +81,7 @@ export default async function ProductsPage({ searchParams }: { searchParams?: { 
 
               {allProducts.length === 0 ? (
                 <div className="bg-white rounded-xl border border-secondary-100 p-16 text-center">
-                  <p className="text-4xl mb-4">🛍️</p>
+                  <p className="mb-4"><svg className="w-16 h-16 mx-auto text-secondary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg></p>
                   <h3 className="text-xl font-bold text-primary-900 mb-2">لا توجد منتجات بعد</h3>
                   <p className="text-secondary-500">سنضيف تشكيلتنا الكاملة قريباً — تابعونا على واتساب!</p>
                 </div>

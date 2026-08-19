@@ -61,7 +61,8 @@ export default async function AccountPage() {
           </div>
           <div className="card p-5 col-span-2 sm:col-span-1">
             <Link href="/wishlist" className="text-primary-600 font-medium hover:underline text-sm">
-              ❤ قائمة المفضلة
+              <svg className="w-4 h-4 inline-block align-[-1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>{' '}
+              قائمة المفضلة
             </Link>
             <div className="text-sm text-secondary-600 mt-1">منتجاتك المحفوظة</div>
           </div>

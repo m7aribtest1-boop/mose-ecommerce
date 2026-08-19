@@ -15,8 +15,8 @@ export function FeaturesSection() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 00-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
       ),
-      title: 'دفع آمن ومرن',
-      description: 'الدفع عند الاستلام، بطاقات بنكية، تحويل بنكي، ومحافظ إلكترونية محلية',
+      title: 'الدفع عند الاستلام',
+      description: 'ادفع نقداً عند استلام طلبك، مع تأكيد الطلب هاتفياً أو عبر واتساب قبل الشحن',
     },
     {
       icon: (
@@ -25,7 +25,7 @@ export function FeaturesSection() {
         </svg>
       ),
       title: 'إرجاع وتبديل سهل',
-      description: 'إرجاع مجاني خلال 14 يوماً، تبديل المقاس واللون بسهولة تامة',
+      description: 'إرجاع مجاني خلال 7 أيام، تبديل المقاس واللون بسهولة تامة',
     },
     {
       icon: (
@@ -42,7 +42,7 @@ export function FeaturesSection() {
     <section className="py-16 bg-white border-y border-secondary-100">
       <div className="container-custom">
         <div className="text-center mb-12">
-          <h2 className="heading-serif text-4xl text-primary-900 mb-4">لِمَاذَا تَخْتَارُ مُوسَى؟</h2>
+          <h2 className="font-arabic text-4xl text-primary-900 mb-4">لِمَاذَا تَخْتَارُ مُوسَى؟</h2>
           <p className="text-secondary-600 max-w-2xl mx-auto">
             نجمع بين الأصالة المغربية والجودة العصرية لنقدم لك تجربة تسوق استثنائية
           </p>

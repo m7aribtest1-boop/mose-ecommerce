@@ -4,7 +4,7 @@ const items = [
   { icon: 'truck', label: 'توصيل سريع لكل المغرب' },
   { icon: 'cash', label: 'الدفع عند الاستلام' },
   { icon: 'refresh', label: `إرجاع خلال ${storeConfig.returns.windowDays} أيام` },
-  { icon: 'shield', label: 'دفع آمن ومشفّر' },
+  { icon: 'shield', label: 'تأكيد عبر واتساب' },
   { icon: 'star', label: 'تقييمات موثّقة' },
 ];
 

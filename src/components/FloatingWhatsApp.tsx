@@ -15,7 +15,7 @@ export default function FloatingWhatsApp() {
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => track('WHATSAPP_CLICK')}
-      className="group fixed bottom-6 left-6 z-50 flex items-center gap-3"
+      className="group fixed bottom-24 md:bottom-6 left-6 z-50 flex items-center gap-3"
       aria-label="تواصل معنا عبر واتساب"
     >
       <span

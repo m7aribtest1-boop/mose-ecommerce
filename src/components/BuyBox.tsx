@@ -109,7 +109,7 @@ export default function BuyBox({ product }: BuyProps) {
           onClick={() => track('WHATSAPP_CLICK', { productId: product.id })}
           className="text-sm text-accent-600 hover:underline mt-2 inline-block"
         >
-          متأكدة من المقاس؟ 💬 راسلينا طولك ووزنك على واتساب
+          متأكدة من المقاس؟ راسلينا طولك ووزنك على واتساب
         </Link>
       </div>
 
@@ -133,7 +133,7 @@ export default function BuyBox({ product }: BuyProps) {
           onClick={() => track('WHATSAPP_CLICK', { productId: product.id })}
           className="flex-1 btn-outline py-4 text-lg rounded-xl flex items-center justify-center transition"
         >
-          💬 واتساب
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg> واتساب
         </a>
       </div>
       <button onClick={handleAdd} className="w-full btn-outline py-3 mb-5">أضف للسلة</button>
@@ -149,10 +149,10 @@ export default function BuyBox({ product }: BuyProps) {
 
       <div className="border-t border-secondary-200 pt-5">
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="flex items-center gap-2 text-secondary-700">🚚 <span>توصيل 24-72 ساعة</span></div>
-          <div className="flex items-center gap-2 text-secondary-700">💵 <span>الدفع عند الاستلام</span></div>
-          <div className="flex items-center gap-2 text-secondary-700">🔄 <span>إرجاع خلال 7 أيام</span></div>
-          <div className="flex items-center gap-2 text-secondary-700">💬 <span>تأكيد عبر واتساب</span></div>
+          <div className="flex items-center gap-2 text-secondary-700"><svg className="w-4 h-4 text-accent-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 17a3 3 0 100-6 3 3 0 000 6zm0 0h8m0 0a3 3 0 100-6 3 3 0 000 6zm0 0l3-3m-3 3l-3-3M3 7h9l3 4v6" /></svg><span>توصيل 24-72 ساعة</span></div>
+          <div className="flex items-center gap-2 text-secondary-700"><svg className="w-4 h-4 text-accent-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m6 0h2M5 7h14a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2z" /></svg><span>الدفع عند الاستلام</span></div>
+          <div className="flex items-center gap-2 text-secondary-700"><svg className="w-4 h-4 text-accent-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M4 9a8 8 0 0114-3M20 15a8 8 0 01-14 3" /></svg><span>إرجاع خلال 7 أيام</span></div>
+          <div className="flex items-center gap-2 text-secondary-700"><svg className="w-4 h-4 text-accent-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg><span>تأكيد عبر واتساب</span></div>
         </div>
       </div>
     </div>

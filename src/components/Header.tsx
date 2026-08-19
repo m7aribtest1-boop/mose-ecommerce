@@ -112,11 +112,17 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-          <Link href="/wishlist" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2.5 text-secondary-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg font-medium">
-            ❤ المفضلة
+          <Link href="/wishlist" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 px-4 py-2.5 text-secondary-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg font-medium">
+            <svg className="w-5 h-5 text-secondary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span>المفضلة</span>
           </Link>
-          <Link href="/account" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2.5 text-secondary-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg font-medium">
-            👤 حسابي
+          <Link href="/account" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 px-4 py-2.5 text-secondary-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg font-medium">
+            <svg className="w-5 h-5 text-secondary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span>حسابي</span>
           </Link>
           <Link href="/checkout" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2.5 text-center bg-primary-600 text-white rounded-lg font-medium mt-2">
             اطلب الآن
@@ -143,7 +149,7 @@ export function Header() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="ابحث عن جلابة، قفطان، تكشيطة..."
-              className="flex-1 border border-secondary-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none"
+              className="flex-1 border border-secondary-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:outline-none"
             />
             <button type="submit" className="btn-primary px-5 py-2 text-sm">بحث</button>
           </form>

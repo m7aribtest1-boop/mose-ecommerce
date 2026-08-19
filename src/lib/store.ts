@@ -17,7 +17,7 @@ export const storeConfig = {
   },
   couponWelcome: 'MARHABA10',
   prepaid: {
-    enabled: true,
+    enabled: false,
     discountPercent: 5,
     methods: ['بطاقة بنكية', 'ويبلي', 'تحويل بنكي'],
     note: 'خصم 5% عند الدفع المسبق (بطاقة / ويبلي / تحويل)',

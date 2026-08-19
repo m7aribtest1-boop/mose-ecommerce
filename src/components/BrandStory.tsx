@@ -3,9 +3,9 @@ import Image from 'next/image';
 
 export function BrandStory({ story }: { story?: string | null }) {
   const stats = [
-    { value: '+15', label: 'سنة خبرة' },
+    { value: '+50', label: 'صانعة ومعلّمة' },
     { value: '100%', label: 'صناعة يدوية' },
-    { value: '12k+', label: 'زبون راضٍ' },
+    { value: '24/7', label: 'دعم واتساب' },
     { value: '48س', label: 'توصيل سريع' },
   ];
 

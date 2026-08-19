@@ -38,7 +38,7 @@ export default async function CategoryDetailPage({ params }: PageProps) {
         <div className="container-custom">
           {products.length === 0 ? (
             <div className="bg-white rounded-xl border border-secondary-100 p-16 text-center">
-              <p className="text-4xl mb-4">🧵</p>
+              <p className="mb-4"><svg className="w-16 h-16 mx-auto text-secondary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 2l9 5-9 5-9-5 9-5zm-9 10l9 5 9-5M3 17l9 5 9-5" /></svg></p>
               <h3 className="text-xl font-bold text-primary-900 mb-2">لا توجد منتجات في هذه الفئة بعد</h3>
               <p className="text-secondary-500">تابعنا على واتساب ليصلك كل جديد أولاً</p>
             </div>
