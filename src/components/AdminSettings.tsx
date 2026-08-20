@@ -26,6 +26,33 @@ export default function AdminSettings() {
   const [totpCode, setTotpCode] = useState('');
   const [totpMsg, setTotpMsg] = useState('');
 
+  const [pwCurrent, setPwCurrent] = useState('');
+  const [pwNew, setPwNew] = useState('');
+  const [pwMsg, setPwMsg] = useState('');
+  const [pwSaving, setPwSaving] = useState(false);
+
+  async function changePassword() {
+    setPwMsg('');
+    if (!pwCurrent || pwNew.length < 8) { setPwMsg('كلمة المرور الجديدة 8 أحرف على الأقل'); return; }
+    setPwSaving(true);
+    try {
+      const res = await fetch('/api/admin/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword: pwCurrent, newPassword: pwNew }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'فشل');
+      setPwCurrent('');
+      setPwNew('');
+      setPwMsg('✓ تم تغيير كلمة المرور');
+    } catch (e) {
+      setPwMsg(e instanceof Error ? e.message : 'فشل تغيير كلمة المرور');
+    } finally {
+      setPwSaving(false);
+    }
+  }
+
   useEffect(() => {
     fetch('/api/admin/settings', { cache: 'no-store' })
       .then((r) => r.json())
@@ -154,6 +181,35 @@ export default function AdminSettings() {
           </button>
           {msg && <div className="text-sm text-primary-600">{msg}</div>}
           <p className="text-xs text-secondary-400">رقم واتساب يظهر فوراً فالزر العائم وباقي أزرار المتجر.</p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+          <h2 className="font-bold text-primary-900">🔑 تغيير كلمة المرور</h2>
+          <div>
+            <label className="block text-sm text-secondary-700 mb-1">كلمة المرور الحالية</label>
+            <input
+              type="password"
+              value={pwCurrent}
+              onChange={(e) => setPwCurrent(e.target.value)}
+              autoComplete="current-password"
+              className="w-full border border-secondary-300 rounded-lg px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-secondary-700 mb-1">كلمة المرور الجديدة (8 أحرف على الأقل)</label>
+            <input
+              type="password"
+              value={pwNew}
+              onChange={(e) => setPwNew(e.target.value)}
+              autoComplete="new-password"
+              className="w-full border border-secondary-300 rounded-lg px-3 py-2"
+            />
+          </div>
+          <button onClick={changePassword} disabled={pwSaving} className="btn-primary px-6 py-2 disabled:opacity-50">
+            {pwSaving ? 'جارٍ الحفظ…' : 'تغيير كلمة المرور'}
+          </button>
+          {pwMsg && <div className="text-sm text-primary-600">{pwMsg}</div>}
+          <p className="text-xs text-secondary-400">ابدل كلمة المرور فور استلام المشروع — لا تُبقِ أبداً الكلمة المؤقتة المعروضة عند البذر.</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">

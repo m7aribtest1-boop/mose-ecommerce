@@ -25,7 +25,7 @@ A complete, production-ready e-commerce platform built for the Moroccan/Arabic m
 **Runs on:** Vercel (static + serverless) / any Node.js host.
 
 **Deployed live demo:** https://mose-ecommerce.vercel.app
-**Admin demo:** https://mose-ecommerce.vercel.app/admin — `admin@mose.ma` / `admin1234`
+**Admin demo:** https://mose-ecommerce.vercel.app/admin — demo credentials provided privately to serious buyers only (admin password is randomly generated, never hardcoded).
 
 **What the buyer gets:** full source code (GitHub repo transfer), Vercel project, PostgreSQL database, admin access, documentation, seed data, and setup support.
 
@@ -51,7 +51,7 @@ A complete, production-ready e-commerce platform built for the Moroccan/Arabic m
 **التقنيات:** Next.js 14 · TypeScript · Tailwind · Prisma 6 · PostgreSQL
 
 **عرض حي:** https://mose-ecommerce.vercel.app
-**دخول الأدمن التجريبي:** `admin@mose.ma` / `admin1234`
+**دخول الأدمن التجريبي:** يُسلَّم خاصاً للمشترين الجادّين فقط (كلمة السر تُولّد عشوائياً ولا تُكتَب في الإعلان).
 
 **يشمل البيع:** الكود المصدري كاملاً (نقل الريبو)، مشروع Vercel، قاعدة البيانات، الوثائق، بيانات تجريبية، ودعم التركيب.
 
@@ -61,4 +61,4 @@ A complete, production-ready e-commerce platform built for the Moroccan/Arabic m
 
 **Titre:** Boutique e-commerce arabe RTL complète — vêtements traditionnels marocains (Next.js + Prisma + PostgreSQL) avec panneau d'administration complet
 
-**Description:** Plateforme e-commerce complète et prête pour le marché marocain/arabe. Boutique RTL arabe premium (Djellaba, Kaftan, Takchita, accessoires), panneau admin complet (ventes, commandes, produits, clients, paramètres), base de données réelle PostgreSQL (12 produits, 4 catégories, avis, coupons), sécurité (JWT + 2FA), analytics, newsletter, SEO arabe, 30 tests Jest. Démo live : https://mose-ecommerce.vercel.app — Admin : `admin@mose.ma` / `admin1234`
+**Description:** Plateforme e-commerce complète et prête pour le marché marocain/arabe. Boutique RTL arabe premium (Djellaba, Kaftan, Takchita, accessoires), panneau admin complet (ventes, commandes, produits, clients, paramètres), base de données réelle PostgreSQL (12 produits, 4 catégories, avis, coupons), sécurité (JWT + 2FA), analytics, newsletter, SEO arabe, 30 tests Jest. Démo live : https://mose-ecommerce.vercel.app — identifiants admin fournis en privé aux acheteurs sérieux.

@@ -37,9 +37,11 @@
 3. **Are the images and .ma domain included?** No. Demo images (Pexels) only; site runs on a .vercel.app subdomain. You provide product photography and register your own domain.
 4. **Is the Arabic RTL native?** Yes — Tailwind config, layout directions, and SEO metadata are RTL-optimized from the ground up.
 5. **How is ownership transferred?** GitHub repo, Vercel project, and Neon PostgreSQL ownership transfer + step-by-step checklist + bilingual docs.
-6. **Admin credentials?** Seeded `admin@mose.ma` / `admin1234` (you change immediately). Security: JWT httpOnly cookies + optional 2FA (TOTP).
+6. **Admin credentials?** Seeded `admin@mose.ma` with a **randomly generated password** printed once at seed time (no hardcoded `admin1234`). You change it immediately from Admin → Settings (change-password form included). Security: JWT httpOnly cookies + optional 2FA (TOTP).
 7. **Variants and inventory?** Yes — full variant management (S–XXL) with per-variant stock, low-stock alerts, order/return management.
 8. **Any debts/investors/encumbrances?** None — sole owner, clean title, zero third-party claims.
+9. **Why are you selling it if it's so good?** "MOSE was developed as a complete e-commerce asset and market-specific platform, but I decided not to operate the retail business myself. Rather than continue investing in inventory, photography, marketing and fulfillment, I'm selling the finished technology to an operator who can commercialize it." (Memorize this — it's the trust answer.)
+10. **What's included / excluded?** Included: source code, GitHub repo, production deployment, Prisma schema, DB structure, documentation, deployment instructions, admin system, API routes, test suite, project config, transfer assistance. Excluded (unless negotiated): real inventory, photography rights, non-transferable 3rd-party licenses, future development, payment-provider accounts, personal accounts.
 
 ## Pro tips for the seller
 

@@ -1,5 +1,7 @@
 ﻿# متجر موسى (MOSE) — E-commerce مغربي كامل
 
+[![CI](https://github.com/m7aribtest1-boop/mose-ecommerce/actions/workflows/ci.yml/badge.svg)](https://github.com/m7aribtest1-boop/mose-ecommerce/actions/workflows/ci.yml)
+
 منصة تجارة إلكترونية متكاملة لبيع الجلابة والقفطان والتكشيطة المغربية، بواجهة عربية RTL، جاهزة للإطلاق والتخصيص. مبنيّة بـ Next.js 14 (App Router) + TypeScript + Tailwind CSS + Prisma + PostgreSQL.
 
 ---
@@ -10,7 +12,8 @@
 - **قاعدة بيانات حقيقية** (Prisma + PostgreSQL): منتجات، فئات، متغيّرات (مقاسات S–XXL + مخزون)، مراجعات، كوبونات، طلبات، عملاء، مشتركو نشرة.
 - **نظام طلبات** مع تحقق Zod + خصم مخزون + سجل عميل + درجة مخاطرة + رقم طلب `MOS-XXXX-XXXX` + الدفع عند الاستلام (COD).
 - **لوحة إدارة كاملة** `/admin`: مبيعات، طلبات اليوم، متوسط السلة (AOV)، نسبة رفض COD، المخزون المنخفض + إدارة الطلبات (تحديث حالة/إرجاع/استرداد) + إضافة منتجات بمقاسات + إدارة العملاء.
-- **أمان**: مصادقة أدمن بكوكيز httpOnly (12 ساعة) + **2FA برمز TOTP** (Google Authenticator) + ضبط كلمة السر.
+- **أمان**: مصادقة أدمن بكوكيز httpOnly (12 ساعة) + **2FA برمز TOTP** (Google Authenticator) + تغيير كلمة السر من اللوحة. كلمة سر الأدمن تُولّد **عشوائياً** عند أول بذر وتُطبع مرة واحدة — غيّرها فوراً.
+- **الجاهزية للبيع/النقل**: صفحة عرض `/acquisition` + دليل إعادة الإطلاق `REBRAND.md` + حقيبة بيع `sell-kit/` + سكريبت تنظيف البيانات `scripts/clean-db.js`.
 - **تحليلات**: تتبّع مشاهدات المنتجات + لوحة إحصائية.
 - **نشرة إخبارية** مع التقاط المدينة، **إشعارات** فورية داخل اللوحة.
 - **كوبونات** (مثال: `MARHABA10`).
@@ -25,8 +28,8 @@
 | اللغة | TypeScript 5 |
 | الأنماط | Tailwind CSS 3.4 + نظام تصميم ذهبي/كحلي |
 | قاعدة البيانات | Prisma 6.19 — PostgreSQL (الإنتاج) / SQLite (التطوير المحلي) |
-| المصادقة | JWT في كوكيز + 2FA (TOTP) |
-| اختبارات | Jest (30 اختبار) |
+| المصادقة | كوكيز httpOnly + 2FA (TOTP) |
+| اختبارات | Jest (30 اختبار) + CI (lint + test + build) |
 
 ## التشغيل
 
@@ -59,7 +62,7 @@ npx prisma studio             # تصفح قاعدة البيانات
 
 ## بيانات الدخول الافتراضية (مهم — غيّرها قبل الإطلاق)
 
-- الأدمن: `admin@mose.ma` / `admin1234`
+- الأدمن: `admin@mose.ma` — كلمة المرور **تُولّد عشوائياً** عند أول بذر وتُطبع مرة واحدة في الطرفية (لا تُكشف في هذا الملف). غيّرها فوراً من `/admin` → الإعدادات.
 - كوبون خصم: `MARHABA10` (10%)
 
 ## بنية المشروع
@@ -101,4 +104,4 @@ A complete, production-ready Arabic RTL e-commerce platform for Moroccan traditi
 
 **Quick start:** `npm install` → `npx prisma db push` → `npm run seed` → `npm run dev`.
 
-**Default admin:** `admin@mose.ma` / `admin1234` (change before launch).
+**Default admin:** `admin@mose.ma` — randomly generated password printed once at seed (change before launch from Admin → Settings).

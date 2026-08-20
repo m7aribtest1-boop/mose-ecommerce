@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -120,13 +121,22 @@ async function main() {
 
   const adminExists = await prisma.adminUser.count();
   if (adminExists === 0) {
-    const passwordHash = await bcrypt.hash('admin1234', 10);
+    const generatedPassword = crypto.randomBytes(6).toString('base64url');
+    const passwordHash = await bcrypt.hash(generatedPassword, 10);
     await prisma.adminUser.create({
       data: { email: 'admin@mose.ma', name: 'مدير موسى', passwordHash },
     });
+    console.log('');
+    console.log('====================================================');
+    console.log('  ✅ Admin created:');
+    console.log('     Email:    admin@mose.ma');
+    console.log(`     Password: ${generatedPassword}  (save now — shown only once)`);
+    console.log('     → Change it immediately from Admin → Settings.');
+    console.log('====================================================');
+    console.log('');
   }
 
-  console.log('Seeding complete. Admin login: admin@mose.ma / admin1234');
+  console.log('Seeding complete.');
 }
 
 main()

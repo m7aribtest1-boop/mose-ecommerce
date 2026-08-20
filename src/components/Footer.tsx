@@ -26,6 +26,7 @@ export function Footer() {
       { label: 'من نحن', href: '/about' },
       { label: 'الخصوصية', href: '/privacy' },
       { label: 'الشروط', href: '/terms' },
+      { label: 'اقتناء المتجر', href: '/acquisition' },
       { label: 'لوحة التحكم', href: '/admin' },
     ],
   };

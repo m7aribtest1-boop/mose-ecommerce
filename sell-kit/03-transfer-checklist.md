@@ -11,7 +11,7 @@
 | PostgreSQL database | Neon (production) — connection string in `mosa_DATABASE_URL_UNPOOLED` | transfer / recreate |
 | Local SQLite dev DB | `prisma/dev.db` | included in repo |
 | Domain (optional) | currently `mose-ecommerce.vercel.app` — buy `mose.ma` for higher value | add & bind |
-| Admin credentials | `admin@mose.ma` / `admin1234` (change to buyer's) | reset after handover |
+| Admin credentials | `admin@mose.ma` — rotated to a fresh random password before handover | buyer resets immediately |
 
 ## 2. Code & Documentation
 
